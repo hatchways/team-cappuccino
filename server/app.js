@@ -1,3 +1,4 @@
+require('./db/mongoose');
 import createError from "http-errors";
 import express, { json, urlencoded } from "express";
 import { join } from "path";
@@ -9,6 +10,7 @@ import pingRouter from "./routes/ping";
 
 var app = express();
 
+// middlewares
 app.use(logger("dev"));
 app.use(json());
 app.use(urlencoded({ extended: false }));
