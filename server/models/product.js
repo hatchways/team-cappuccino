@@ -3,6 +3,18 @@ const Schema = mongoose.Schema;
 
 
 const productSchema = new Schema({
+    name: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    price: {
+        type: Number,
+        required: true
+    },
+    updatePrice: {
+        type: Number
+    },
     link: {
         type: String,
         required: true,
