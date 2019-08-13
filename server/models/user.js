@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const List = require('./list');
 
 
 
@@ -32,6 +34,12 @@ const userSchema = new Schema({
             if (value.toLowerCase().includes('password')) throw new Error('Password cannot contain "pasword". Plese try another one!')
         }
     },
+    tokens: [{
+        token: {
+            type: String,
+            required: true
+        }
+    }],
     avatar: {
         data: Buffer,
         contentType: String
@@ -55,16 +63,18 @@ const userSchema = new Schema({
 });
 
 
-// comparing passwords
+
+// matching passwords for log in
 userSchema.methods.hasSamePassword = function(requestedPassword) {
+    // compareSync is used to compare input password and password in db
     return bcrypt.compareSync(requestedPassword, this.password);
-}
-
-
-// password enhancing
+  }
+  
+  
+// Save data 
 userSchema.pre('save', function(next) {
     const user = this;
-    // hashing password
+    // Hashing password
     bcrypt.genSalt(10, function(err, salt) {
         bcrypt.hash(user.password, salt, function(err, hash) {
             user.password = hash;
@@ -72,6 +82,7 @@ userSchema.pre('save', function(next) {
         });
     });
 });
+
 
 
 module.exports = mongoose.model('User', userSchema);

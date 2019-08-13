@@ -12,8 +12,9 @@ const listSchema = new Schema({
         type: Date,
         default: Date.now
     },
-    user: {
+    createdBy: {
         type: Schema.Types.ObjectId,
+        required: true,
         ref: 'User'
     }
 });
