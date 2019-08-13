@@ -8,12 +8,14 @@ const listSchema = new Schema({
         required: true,
         trim: true
     },
+    createdOn: {
+        type: Date,
+        default: Date.now
+    },
     user: {
         type: Schema.Types.ObjectId,
         ref: 'User'
     }
-}, {
-    timestamps: true
 });
 
 
