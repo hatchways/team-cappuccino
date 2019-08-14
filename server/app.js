@@ -11,6 +11,7 @@ import pingRouter from "./routes/ping";
 import authRouter from './routes/auth';
 import userRouter from "./routes/user";
 import listRouter from './routes/list';
+import itemRouter from './routes/item';
 
 var app = express();
 
@@ -26,6 +27,7 @@ app.use("/ping", pingRouter);
 app.use("/users", authRouter);
 app.use("/users", userRouter);
 app.use("/api", listRouter);
+app.use("/api", itemRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

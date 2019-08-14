@@ -1,5 +1,5 @@
 const List = require('../models/list');
-
+const User = require('../models/user');
 
 // create list
 exports.createList = async (req, res) => {
@@ -9,7 +9,9 @@ exports.createList = async (req, res) => {
     });
 
     try {
+        // save list and update user model
         await list.save(); 
+        // return list
         res.status(201).send(list);
     } catch(e) {
         res.status(500).send(e);
@@ -85,7 +87,9 @@ exports.deleteList = async (req, res) => {
     try {
         const _id = req.params.id;
 
-        const list = await List.findOneAndRemove({ _id, user: req.user._id });
+        const list = await List.findOne({ _id, user: req.user._id });
+        
+        list.remove(); // list remove()
 
         if(!list) res.status(404).send({ error: 'List is not found!' });
 

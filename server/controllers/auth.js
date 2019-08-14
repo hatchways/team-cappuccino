@@ -9,7 +9,7 @@ exports.register = async (req, res) => {
   try {
       // save user
       await user.save();
-      res.status(201).send(user);
+      res.status(201).send(user.getPublicProfile());
   } catch(e) {
       res.status(400).send({ error: 'Email is taken. Please try another email!' });
   };

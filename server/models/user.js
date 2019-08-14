@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const keys = require('../config/keys');
 const List = require('./list');
+const Item = require('./item');
 
 
 
@@ -22,7 +23,7 @@ const userSchema = new Schema({
         unique: true,
         lowercase: true,
         validate(value) {
-            if(!validator.isEmail(value)) throw new Error('Email is invalid.')
+            if(!validator.isEmail(value)) throw new Error('Email is invalid!')
         },        
         min: [4, 'Too short, min is 4 characters']
     },
@@ -56,6 +57,10 @@ const userSchema = new Schema({
     lists: [{
         type: Schema.Types.ObjectId,
         ref: 'List'
+    }],
+    items: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Item'
     }]
 },
 {
@@ -63,13 +68,19 @@ const userSchema = new Schema({
 });
 
 
-
+// list
 userSchema.virtual('list', {
     ref: 'List', 
     localField: '_id',
     foreignField: 'user'
 });
 
+// item
+userSchema.virtual('item', {
+    ref: 'Item',
+    localField: '_id',
+    foreignField: 'user'
+});
 
 // Hiding return data for User model
 userSchema.methods.getPublicProfile = function() {
@@ -80,6 +91,9 @@ userSchema.methods.getPublicProfile = function() {
     delete userObject.password;
     delete userObject.tokens;
     delete userObject.avatar;
+    delete userObject.items;
+    delete userObject.followers;
+    delete userObject.followers;
     // return user
     return userObject;
 }
@@ -127,9 +141,11 @@ userSchema.pre('save', async function (next) {
 userSchema.pre('remove', async function(next) {
     const user = this;
 
-    await List.deleteMany({ createdBy: user._id });
+    await List.deleteMany({ user: user._id });
+    await Item.deleteMany({ user: user._id });
     next(); // continue proceeding request
-})
+});
+
 
 
 const User = mongoose.model('User', userSchema);

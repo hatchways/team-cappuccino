@@ -9,7 +9,7 @@ exports.getUser = async (req,res) => {
         if(!user) return res.status(400).send({ error: 'User is not found!'});
 
         // return user
-        res.status(200).json(user);
+        res.status(200).json(user.getPublicProfile());
     } catch(e) {
         res.status(500).send(e);
     }
@@ -19,8 +19,8 @@ exports.getUser = async (req,res) => {
 // get all users
 exports.getAllUsers = async (req, res) => {
     try {
-        const users = await User.find({});
-        res.status(200).send(users);
+        const users = await User.find({}).select('_id name email following followers');
+        res.status(200).json(users);
     } catch(e) {
         res,status(400).send(e);
     }
@@ -43,7 +43,7 @@ exports.updateUser = async (req, res) => {
 
         // save and return user
         await req.user.save();
-        res.status(201).json(req.user);
+        res.status(201).json(req.user.getPublicProfile());
     } catch(e) {
         res.status(400).send(e);
     }
@@ -54,7 +54,7 @@ exports.updateUser = async (req, res) => {
 exports.deleteUser = async (req, res) => {
     try {
         await req.user.remove();
-        res.status(200).json(req.user);
+        res.status(200).json(req.user.getPublicProfile());
     } catch(e) {
         res.status(400).send(e);
     }
