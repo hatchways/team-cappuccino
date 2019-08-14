@@ -12,9 +12,6 @@ const productSchema = new Schema({
         type: Number,
         required: true
     },
-    updatePrice: {
-        type: Number
-    },
     link: {
         type: String,
         required: true,
