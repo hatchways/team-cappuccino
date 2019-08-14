@@ -1,37 +1,21 @@
 const User = require('../models/user');
+const jwt = require('jsonwebtoken');
+const keys = require('../config/keys');
 
-exports.authMiddleware = async (req, res, next) => {
-    // Get token
-    const token = req.headers.authorization;
+const auth = async (req, res, next) => {
+  try {
+      const token = req.header('Authorization').replace('Bearer ', '');
+      const decodedToken = jwt.verify(token,keys.TOKEN_SECRET); // decoding input token
+      const user = await User.findOne({ _id: decodedToken._id, 'tokens.token': token }); // find user with same token
 
-    // check token
-    if(token) {
-      // token = [Bearer,token]
-      const user = parseToken(token);
-      // Find user id
-      await User.findById(user.userId, async (err, user) => {
-        if (err) return res.status(422).send(err);
-        // import user
-        if(user) {
-          res.locals.user = await user;
-          next();
-        } else {
-          return notAuthorized(res);
-        }
-      })
-    } else {
-      return notAuthorized(res);
-    };
-};
-
-
-// Token Decoding
-const parseToken = (token) => {
-    // token = [Bearer, token]
-    return jwt.verify(token.split(' ')[1], keys.SECRET);
+      if (!user){
+          throw new Error('Invalid token!');
+      }
+      req.user = user; 
+      next(); 
+  } catch(e) {
+      res.status(401).send({ error: 'You need to log into your account!~'});
+  }
 }
 
-
-const notAuthorized = (res) => {
-  return res.status(401).send({errors: 'Unauthorized! Please log into your account!'});
-}
+module.exports = auth;

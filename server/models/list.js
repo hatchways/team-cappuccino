@@ -8,16 +8,16 @@ const listSchema = new Schema({
         required: true,
         trim: true
     },
-    createdOn: {
-        type: Date,
-        default: Date.now
-    },
-    createdBy: {
+    user: {
         type: Schema.Types.ObjectId,
         required: true,
         ref: 'User'
     }
+},
+{
+    timestamps: true
 });
 
 
-mongoose.model('List', listSchema);
+const List = mongoose.model('List', listSchema);
+module.exports = List;

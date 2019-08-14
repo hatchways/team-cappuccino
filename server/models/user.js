@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const keys = require('../config/keys');
 const List = require('./list');
 
 
@@ -44,10 +45,6 @@ const userSchema = new Schema({
         data: Buffer,
         contentType: String
     },
-    createdOn: {
-        type: Date,
-        default: Date.now
-    },
     following: [{ 
         type: Schema.Types.ObjectId,
         ref: 'User'
@@ -60,29 +57,80 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'List'
     }]
+},
+{
+    timestamps: true
 });
 
 
 
-// matching passwords for log in
-userSchema.methods.hasSamePassword = function(requestedPassword) {
-    // compareSync is used to compare input password and password in db
-    return bcrypt.compareSync(requestedPassword, this.password);
-  }
-  
-  
-// Save data 
-userSchema.pre('save', function(next) {
+userSchema.virtual('list', {
+    ref: 'List', 
+    localField: '_id',
+    foreignField: 'user'
+});
+
+
+// Hiding return data for User model
+userSchema.methods.getPublicProfile = function() {
+    const user = this; 
+    const userObject = user.toObject();
+
+    // hide data
+    delete userObject.password;
+    delete userObject.tokens;
+    delete userObject.avatar;
+    // return user
+    return userObject;
+}
+
+// generate login token
+userSchema.methods.generateAuthToken = async function() {
     const user = this;
-    // Hashing password
-    bcrypt.genSalt(10, function(err, salt) {
-        bcrypt.hash(user.password, salt, function(err, hash) {
-            user.password = hash;
-            next();
-        });
-    });
+    const token = jwt.sign({ _id: user.id.toString() }, keys.TOKEN_SECRET, { expiresIn: '1h'});
+    user.tokens = user.tokens.concat({ token }); // assign token to user tokens
+    await user.save(); 
+
+    return token; 
+}
+
+
+// find credentials function
+userSchema.statics.findByCredentials = async (email, password) => {
+    const user = await User.findOne({ email });
+    if (!user) {
+        throw new Error('User is not registered. Please try another email!')
+    }
+
+    // comparing passwords
+    const isMatch = await bcrypt.compare(password, user.password)
+    if (!isMatch) {
+        throw new Error('Passwords are not matching. Please enter again!')
+    }
+    // return user
+    return user;
+};
+
+
+// hasing passwordbefore schema save
+userSchema.pre('save', async function (next) {
+    const user = this // get user
+
+    if (user.isModified('password')) {
+        user.password = await bcrypt.hash(user.password, 8); // hashed password
+    }
+    next();
 });
 
 
+// delete user lists when user is removed
+userSchema.pre('remove', async function(next) {
+    const user = this;
 
-module.exports = mongoose.model('User', userSchema);
+    await List.deleteMany({ createdBy: user._id });
+    next(); // continue proceeding request
+})
+
+
+const User = mongoose.model('User', userSchema);
+module.exports = User;
