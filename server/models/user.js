@@ -43,8 +43,8 @@ const userSchema = new Schema({
         }
     }],
     avatar: {
-        data: Buffer,
-        contentType: String
+        type: String,
+        trim: true
     },
     following: [{ 
         type: Schema.Types.ObjectId,
@@ -90,10 +90,10 @@ userSchema.methods.getPublicProfile = function() {
     // hide data
     delete userObject.password;
     delete userObject.tokens;
-    delete userObject.avatar;
     delete userObject.items;
+    delete userObject.lists;
     delete userObject.followers;
-    delete userObject.followers;
+    delete userObject.following;
     // return user
     return userObject;
 }

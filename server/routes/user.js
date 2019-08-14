@@ -15,6 +15,9 @@ router.patch('/me/:id', authMiddleware, UserController.updateUser);
 // @route DELETE users/me
 router.delete('/me', authMiddleware, UserController.deleteUser);
 
+// @route POST users/me/avatar
+router.post('/me/:id/avatar', authMiddleware, UserController.uploadAvatar);
+
 module.exports = router;
 
 

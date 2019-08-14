@@ -1,5 +1,6 @@
 const User = require('../models/user');
-
+const upload = require('../services/image-upload');
+const singleUpload = upload.single('image');
 
 // get user info
 exports.getUser = async (req,res) => {
@@ -59,3 +60,41 @@ exports.deleteUser = async (req, res) => {
         res.status(400).send(e);
     }
 }
+
+
+// upload user avatar
+exports.uploadAvatar = (req, res) => {
+    try {
+        singleUpload(req, res, async function(err){
+            if(err) res.status(400).json({ error: err});
+    
+            // update User image
+            const user = await User.findById(req.params.id);
+            user.avatar = req.file.location;
+            res.status(200).json(user.getPublicProfile());
+        });
+    } catch(e) {
+        res.status(500).json(e.message);
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
