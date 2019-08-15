@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 import { Button } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
-import { Route, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
 
 const loginPageStyle = theme => ({
@@ -38,6 +38,9 @@ const loginPageStyle = theme => ({
   },
   createAccount: {
     marginTop: "30px"
+  },
+  createLink: {
+    color: theme.primary
   }
 });
 
@@ -62,17 +65,22 @@ class LoginPage extends Component {
             variant="outlined"
             className={classes.password}
           />
-          <Button
-            variant="contained"
-            size="large"
-            buttonStyle={{ borderRadius: 25, width: "15vw" }}
-            style={{ borderRadius: 25, width: "15vw" }}
-            className={classes.loginButton}
-          >
-            Login
-          </Button>
+          <Link to="/profile" style={{ textDecoration: "none" }}>
+            <Button
+              variant="contained"
+              size="large"
+              buttonStyle={{ borderRadius: 25, width: "15vw" }}
+              style={{ borderRadius: 25, width: "15vw" }}
+              className={classes.loginButton}
+            >
+              Login
+            </Button>
+          </Link>
           <p className={classes.createAccount}>
-            Don't have an account? <Link to="/signup">Create an account</Link>
+            Don't have an account?{" "}
+            <Link to="/signup" className={classes.createLink}>
+              Create an account
+            </Link>
           </p>
         </div>
       </div>

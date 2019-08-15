@@ -2,9 +2,8 @@ import React, { Component } from "react";
 
 import { Button } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
-import { Route, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
-import { useTheme } from "@material-ui/core/styles";
 
 const signUpPageStyle = theme => ({
   signUpContainer: {
@@ -42,8 +41,11 @@ const signUpPageStyle = theme => ({
     backgroundColor: theme.primary,
     color: "white"
   },
-  createAccount: {
+  loginAccount: {
     marginTop: "30px"
+  },
+  loginLink: {
+    color: theme.primary
   }
 });
 
@@ -93,8 +95,11 @@ class SignUpPage extends Component {
           >
             Create Account
           </Button>
-          <p className={classes.createAccount}>
-            Already have an account? <Link to="/">Sign In</Link>
+          <p className={classes.loginAccount}>
+            Already have an account?{" "}
+            <Link to="/" className={classes.loginLink}>
+              Sign In
+            </Link>
           </p>
         </div>
       </div>
