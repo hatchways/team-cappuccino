@@ -2,9 +2,8 @@ import React, { Component } from "react";
 
 import { Button } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
-import { Route, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
-import { useTheme } from "@material-ui/core/styles";
 
 const signUpPageStyle = theme => ({
   signUpContainer: {
@@ -59,14 +58,12 @@ class SignUpPage extends Component {
             label="Name"
             autoFocus="true"
             variant="outlined"
-            // inputProps={{ style: { textAlign: "center" } }}
             className={classes.name}
           />
           <TextField
             id="Email"
             label="Email"
             variant="outlined"
-            // inputProps={{ style: { textAlign: "center" } }}
             className={classes.email}
           />
           <TextField

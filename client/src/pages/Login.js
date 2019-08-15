@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 import { Button } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
-import { Route, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
 
 const loginPageStyle = theme => ({
@@ -53,7 +53,6 @@ class LoginPage extends Component {
             label="Email"
             autoFocus="true"
             variant="outlined"
-            // inputProps={{ style: { textAlign: "center" } }}
             className={classes.email}
           />
           <TextField
