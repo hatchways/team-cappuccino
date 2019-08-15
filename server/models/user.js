@@ -36,16 +36,16 @@ const userSchema = new Schema({
             if (value.toLowerCase().includes('password')) throw new Error('Password cannot contain "pasword". Plese try another one!')
         }
     },
+    avatar: {
+        type: String,
+        trim: true
+    },
     tokens: [{
         token: {
             type: String,
             required: true
         }
     }],
-    avatar: {
-        type: String,
-        trim: true
-    },
     following: [{ 
         type: Schema.Types.ObjectId,
         ref: 'User'
@@ -91,9 +91,6 @@ userSchema.methods.getPublicProfile = function() {
     delete userObject.password;
     delete userObject.tokens;
     delete userObject.items;
-    delete userObject.lists;
-    delete userObject.followers;
-    delete userObject.following;
     // return user
     return userObject;
 }
@@ -112,9 +109,8 @@ userSchema.methods.generateAuthToken = async function() {
 // find credentials function
 userSchema.statics.findByCredentials = async (email, password) => {
     const user = await User.findOne({ email });
-    if (!user) {
-        throw new Error('User is not registered. Please try another email!')
-    }
+
+    if (!user) throw new Error('User is not registered. Please try another email!');
 
     // comparing passwords
     const isMatch = await bcrypt.compare(password, user.password)
@@ -133,9 +129,9 @@ userSchema.pre('save', async function (next) {
     if (user.isModified('password')) {
         user.password = await bcrypt.hash(user.password, 8); // hashed password
     }
-    next();
+    next(); // proceed next
 });
-
+  
 
 // delete user lists when user is removed
 userSchema.pre('remove', async function(next) {

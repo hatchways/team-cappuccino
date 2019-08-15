@@ -76,3 +76,90 @@ exports.uploadAvatar = (req, res) => {
         res.status(400).send({ error: e.message});
     };
 }
+
+
+// following/unfollowing
+exports.addFollowing = async (req, res, next) => {
+    const { userId, followId } = req.body;
+
+    try {
+        await User.findByIdAndUpdate(
+            userId,
+            { $addToSet: { following: followId }},
+            (err, result) => {
+                if(err) return res.status(400).json({ error: err });
+
+                next(); // move to next actions
+            }
+        )
+    } catch(e) {
+        res.status(400).send({ error: e.message});
+    }
+}
+
+exports.removeFollowing = async (req, res, next) => {
+    const { userId, unfollowId } = req.body;
+
+    try {
+        await User.findByIdAndUpdate(
+            userId,
+            { $unset: { following: unfollowId }},
+            (err, result) => {
+                if(err) return res.status(400).json({ error: err });
+
+               next(); // move to next actions
+            }
+        )
+    } catch(e) {
+        res.status(400).json({ error: e.message })
+    }
+}
+
+
+// add/remove followers
+exports.addFollower = async (req, res) => {
+    const { userId, followId } = req.body;
+
+    try {
+        await User.findByIdAndUpdate(
+            followId,
+            { $addToSet: { followers: userId}},
+            { new: true}
+        )
+        .populate("following", "_id name email")
+        .populate("followers", "_id name email")
+        .exec(async (err, result) => {
+            if(err) return res.status(400).json({ error: err });
+
+            res.status(200).json({
+                message: 'Add following and followers successfully!'
+            });
+        })
+    } catch(e) {
+        res.status(400).json({ error: e.message })
+    }
+}
+
+
+exports.removeFollower = async (req, res) => {
+    const { userId, unfollowId } = req.body;
+
+    try {
+        await User.findByIdAndUpdate(
+            unfollowId,
+            { $unset: { followers: userId}},
+            { new: true}
+        )
+        .populate("following", "_id name email")
+        .populate("followers", "_id name email")
+        .exec(async (err, result) => {
+            if(err) return res.status(400).json({ error: err });
+
+            res.status(200).json({
+                message: 'Remove following and followers successfully!'
+            });
+        })
+    } catch(e) {
+        res.status(400).json({ error: e.message })
+    }
+}
