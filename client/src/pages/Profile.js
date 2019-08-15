@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { useState } from "react";
 
 import {
   AppBar,
@@ -7,14 +7,11 @@ import {
   Grid,
   Badge,
   Paper,
-  TextField,
   InputBase,
   FormControl,
   NativeSelect,
-  InputLabel,
   GridList,
-  GridListTile,
-  ListSubheader
+  GridListTile
 } from "@material-ui/core";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import Add from "@material-ui/icons/Add";
@@ -141,7 +138,8 @@ const profilePageStyles = makeStyles(theme => ({
   listTile: {
     backgroundColor: "white",
     marginRight: "20px",
-    borderRadius: "15px"
+    borderRadius: "15px",
+    marginTop: "20px"
   }
 }));
 
@@ -153,7 +151,6 @@ const StyledBadge = withStyles(theme => ({
   }
 }))(Badge);
 
-// class ProfilePage extends Component {
 function ProfilePage() {
   const [list, setList] = useState("");
 
@@ -185,7 +182,7 @@ function ProfilePage() {
             edge="start"
           >
             <Grid item>
-              <img src={AppIcon} className={classes.logo} />
+              <img src={AppIcon} alt="logo" className={classes.logo} />
             </Grid>
             <Grid item className={classes.dealsMateGrid}>
               <h1 className={classes.dealsMateName}>DEALS MATE</h1>
@@ -251,12 +248,12 @@ function ProfilePage() {
           </Paper>
         </Grid>
       </Grid>
+
       <div className={classes.shoppingListsContainer}>
         <h1 className={classes.shoppingListText}>My Shopping Lists:</h1>
         <GridList cellHeight={400}>
           {listNames.map(list => (
             <GridListTile
-              //   cols={1}
               style={{ padding: "0px", width: "288px", height: "400px" }}
               className={classes.listTile}
             >
@@ -268,7 +265,7 @@ function ProfilePage() {
                     borderRadius: "15px 15px 0px 0px"
                   }}
                 >
-                  <img src={listImage} width="100%" />
+                  <img src={listImage} alt="list" width="100%" />
                 </div>
                 <h2
                   style={{
@@ -288,13 +285,15 @@ function ProfilePage() {
             style={{
               padding: "0px",
               width: "288px",
-              height: "400px"
+              height: "400px",
+              marginTop: "20px"
             }}
           >
             <Grid
               container
               direction="column"
               justify="center"
+              alignItems="center"
               style={{
                 backgroundColor: "white",
                 width: "100%",
@@ -302,8 +301,8 @@ function ProfilePage() {
                 borderRadius: "15px 15px 15px 15px"
               }}
             >
-              <Button>
-                <Add />
+              <Button style={{ width: "30px" }}>
+                <Add style={{ width: "2em", height: "2em" }} />
               </Button>
               <h1 style={{ textAlign: "center" }}>Add New List</h1>
             </Grid>
