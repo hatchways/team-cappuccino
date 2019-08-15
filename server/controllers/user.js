@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const updateObj = require('./subs-controller/edit-model');
 const upload = require('../services/image-upload');
 const singleUpload = upload.single('image');
 
@@ -30,17 +31,9 @@ exports.getAllUsers = async (req, res) => {
 
 // updating user
 exports.updateUser = async (req, res) => {
-    const updates = Object.keys(req.body);
-    const allowedUpdateFields = ["name", "email", "password"];
-    const isValidOperation = updates.every(update => allowedUpdateFields.includes(update));
-
-    // check fields updates
-    if (!isValidOperation) {
-        return res.status(400).send( { error: 'Invalid Data!' });
-    }
-
     try {
-        updates.forEach(update => req.user[update] = req.body[update]);
+        // update user
+        updateObj(req.user, req.body, ["name", "email", "password"]);
 
         // save and return user
         await req.user.save();

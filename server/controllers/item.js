@@ -1,6 +1,7 @@
 const Item = require('../models/item');
 const List = require('../models/list');
 const User = require('../models/user');
+const updateObj = require('./subs-controller/edit-model');
 
 
 // adding item
@@ -28,14 +29,14 @@ exports.addItem = (req, res ) => {
             await item.save();
             await foundList.save();
             // update user model
-            // await User.updateOne({ 
-            //     _id: req.user._id}, 
-            //     {$push: { items: item }
-            // }, function(){});
+            await User.updateOne({ 
+                _id: req.user._id}, 
+                { $addToSet: { items: item }
+            }, function(){});
             }
         );
     
-        res.status(200).json(item);
+        res.status(200).json({ message: 'Item is created!'});
     } catch(e) {
         res.status(400).send({ error: e.message});
     }
@@ -74,31 +75,22 @@ exports.getSingleItem = async (req, res) => {
 
 // Update item
 exports.updateItem = async (req, res) => {
-    // check for validation updates
-    const updates = Object.keys(req.body);
-    const allowedUpdateFields = ["name", "url"];
-    const isValidOperation = updates.every(update => allowedUpdateFields.includes(update));
-
-    // perform validation updates check
-    if (!isValidOperation) {
-        res.status(400).send({ error: 'Invalid Data! Pleas try again'});
-    }
-
     try {
         const _id = req.params.id;
 
         const item = await Item.findOne({ _id, user: req.user._id });
 
         // update list
-        updates.forEach(update => item[update] = req.body[updates]);
+        updateObj(item, req.body, ["name", "url"]);
 
+        // save item
         await item.save();
 
         if(!item) res.status(400).send({
             error: 'Item is not found!'
         });
         // return list
-        res.status(201).json(item);
+        res.status(201).json({ message: 'Item is updated'});
     } catch(e) {
         res.status(400).send({ error: e.message});    
     }
@@ -110,13 +102,29 @@ exports.deleteItem = async(req, res) => {
     const _id = req.params.id;
 
     try {
-        const item = await Item.findOne({ _id, user: req.user._id });
+        await Item.findOne({ _id, user: req.user._id })
+        .populate('list')
+        .populate('user')
+        .exec(async (err, result) => {
+            if(err) return res.status(400).json({ error: err});
 
-        if(!item) res.status(404).send({ error: 'Item is not found!' });
+            if(!result) res.status(400).send({ error: 'Item is not found!' });
 
-        // return list
-        item.remove();
-        res.send(item);
+            // upate List and User
+            List.findByIdAndUpdate(
+                result.list, 
+                { $unset: { items: _id }}
+            );
+
+            User.findByIdAndUpdate(
+                result.user, 
+                { $unset: { items: _id }}
+            );
+
+            // remove item
+            result.remove();
+            res.status(200).send({ message: 'Item is removed!'})
+        });
     } catch(e) {
         res.status(400).send({ error: e.message});
     }

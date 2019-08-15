@@ -37,23 +37,5 @@ const itemSchema = new Schema({
 });
 
 
-// remove item from List and User model 
-itemSchema.pre('remove', async function(next) {
-    const item = this;
-
-    await List.findOneAndUpdate(
-        {
-            "items": item._id
-        },
-        {
-            $pull: {
-                "items": item._id
-            }
-        }
-    );
-
-    next();
-})
-
 
 module.exports = mongoose.model('Item', itemSchema);

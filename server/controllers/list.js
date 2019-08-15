@@ -1,5 +1,6 @@
 const List = require('../models/list');
 const User = require('../models/user');
+const updateObj = require('./subs-controller/edit-model');
 
 // create list
 exports.createList = async (req, res) => {
@@ -51,23 +52,13 @@ exports.getSingleList = async (req, res) => {
 
 // edit list
 exports.updateList = async (req, res) => {
-    // check for validation updates
-    const updates = Object.keys(req.body);
-    const allowedUpdateFields = ["name"];
-    const isValidOperation = updates.every(update => allowedUpdateFields.includes(update));
-
-    // perform validation updates check
-    if (!isValidOperation) {
-        res.status(400).send({ error: 'Invalid Data! Pleas try again'});
-    }
-
     try {
         const _id = req.params.id;
 
         const list = await List.findOne({ _id, user: req.user._id });
 
         // update list
-        updates.forEach(update => list[update] = req.body[updates]);
+        updateObj(list, req.body, ["name"]);
 
         await list.save();
 
@@ -86,7 +77,7 @@ exports.updateList = async (req, res) => {
 exports.deleteList = async (req, res) => {
     try {
         const _id = req.params.id;
-
+        // find list
         const list = await List.findOne({ _id, user: req.user._id });
         
         list.remove(); // list remove()
