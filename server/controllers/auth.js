@@ -11,7 +11,7 @@ exports.register = async (req, res) => {
       await user.save();
       res.status(201).send(user.getPublicProfile());
   } catch(e) {
-      res.status(400).send({ error: 'Email is taken. Please try another email!' });
+      res.status(400).send({ error: e.message });
   };
 };
 
@@ -26,7 +26,7 @@ exports.login =  async (req, res) => {
       
       res.send({ user: user.getPublicProfile(), token });// return user
   } catch(e) {
-      res.status(400).send({ error: 'This email is not registered yet! Please sign up!' });
+    res.status(400).send({ error: e.message });
   }
 }
 
@@ -41,7 +41,7 @@ exports.logout = async (req, res) => {
       await req.user.save();
       res.send();
   } catch(e) {
-      res.status(500).send();
+    res.status(400).send({ error: e.message });
   }
 }
 

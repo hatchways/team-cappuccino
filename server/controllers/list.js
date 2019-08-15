@@ -77,7 +77,7 @@ exports.updateList = async (req, res) => {
         // return list
         res.status(201).json(list);
     } catch(e) {
-        res.status(400).send({ error: 'Error! Please try again later!~'});
+        res.status(400).send({ error: e.message});
     }
 }
 
@@ -96,6 +96,6 @@ exports.deleteList = async (req, res) => {
         // return list
         res.send(list);
     } catch(e) {
-        res.status(400).send(e);
+        res.status(400).send({ error: e.message});
     }
 }

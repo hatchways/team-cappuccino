@@ -12,7 +12,7 @@ exports.getUser = async (req,res) => {
         // return user
         res.status(200).json(user.getPublicProfile());
     } catch(e) {
-        res.status(500).send(e);
+        res.status(400).send({ error: e.message});
     }
 }
 
@@ -20,10 +20,10 @@ exports.getUser = async (req,res) => {
 // get all users
 exports.getAllUsers = async (req, res) => {
     try {
-        const users = await User.find({}).select('_id name email following followers');
+        const users = await User.find({}).select('_id name email avatar following followers');
         res.status(200).json(users);
     } catch(e) {
-        res,status(400).send(e);
+        res.status(400).send({ error: e.message});
     }
 };
 
@@ -46,7 +46,7 @@ exports.updateUser = async (req, res) => {
         await req.user.save();
         res.status(201).json(req.user.getPublicProfile());
     } catch(e) {
-        res.status(400).send(e);
+        res.status(400).send({ error: e.message});
     }
 }
 
@@ -57,10 +57,9 @@ exports.deleteUser = async (req, res) => {
         await req.user.remove();
         res.status(200).json(req.user.getPublicProfile());
     } catch(e) {
-        res.status(400).send(e);
+        res.status(400).send({ error: e.message});
     }
 }
-
 
 // upload user avatar
 exports.uploadAvatar = (req, res) => {
@@ -74,27 +73,6 @@ exports.uploadAvatar = (req, res) => {
             res.status(200).json(user.getPublicProfile());
         });
     } catch(e) {
-        res.status(500).json(e.message);
-    }
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        res.status(400).send({ error: e.message});
+    };
+}

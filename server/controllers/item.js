@@ -37,7 +37,7 @@ exports.addItem = (req, res ) => {
     
         res.status(200).json(item);
     } catch(e) {
-        return res.status(500).send(e.message);
+        res.status(400).send({ error: e.message});
     }
 }
 
@@ -48,7 +48,7 @@ exports.getAllItems = async (req, res) => {
 
         res.status(200).send(req.user.items);
     } catch(e) {
-        res.status(500).send(e);
+        res.status(400).send({ 'error': e.message });   
     }
 }
 
@@ -67,7 +67,7 @@ exports.getSingleItem = async (req, res) => {
         // return item
         res.status(200).json(item);
     } catch(e) {
-        res.status(500).send(e);
+        res.status(400).send({ error: e.message });   
     }
 }
 
@@ -100,7 +100,7 @@ exports.updateItem = async (req, res) => {
         // return list
         res.status(201).json(item);
     } catch(e) {
-        res.status(400).send({ error: 'Error! Please try again later!~'});
+        res.status(400).send({ error: e.message});    
     }
 }
 
@@ -118,6 +118,6 @@ exports.deleteItem = async(req, res) => {
         item.remove();
         res.send(item);
     } catch(e) {
-        res.status(400).send(e);
+        res.status(400).send({ error: e.message});
     }
 }
