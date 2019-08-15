@@ -115,7 +115,7 @@ exports.deleteItem = async(req, res) => {
                 result.list, 
                 { $unset: { items: _id }}
             );
-
+``
             User.findByIdAndUpdate(
                 result.user, 
                 { $unset: { items: _id }}
