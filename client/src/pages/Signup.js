@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { Button } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
+import { signup } from '../components/auth';
 import TextField from "@material-ui/core/TextField";
 
 const signUpPageStyle = theme => ({
@@ -47,8 +48,40 @@ const signUpPageStyle = theme => ({
 });
 
 class SignUpPage extends Component {
+  state = {
+    name: "",
+    email: "",
+    password: "",
+    error: "",
+  }
+
+  handleChange = name => event => {
+    this.setState({ error: "" });
+    this.setState({ [name]: event.target.value })
+  }
+
+  onSubmit = event => {
+    event.preventDefault();
+    const { name, email, password } = this.state;
+    const user = { name, email, password };
+
+    // sign up user
+    signup(user).then(data => {
+      // if(data.error) this.setState({ error: data.error });
+
+      this.setState({
+        error: "",
+        name: "",
+        email: "",
+        password: "",
+      })
+    })
+  }
+
   render() {
     const { classes } = this.props;
+    const { name, email, password } = this.state;
+
     return (
       <div className={classes.signUpContainer}>
         <div className={classes.signUp}>
@@ -59,24 +92,24 @@ class SignUpPage extends Component {
             autoFocus="true"
             variant="outlined"
             className={classes.name}
+            value={name}
+            onChange={this.handleChange("name")}
           />
           <TextField
             id="Email"
             label="Email"
             variant="outlined"
             className={classes.email}
+            value={email}
+            onChange={this.handleChange("email")}
           />
           <TextField
             id="Password"
             label="Password"
             variant="outlined"
             className={classes.password}
-          />
-          <TextField
-            id="Confirm Password"
-            label="Confrim Password"
-            variant="outlined"
-            className={classes.password}
+            value={password}
+            onChange={this.handleChange("password")}
           />
           <Button
             variant="contained"
@@ -87,8 +120,9 @@ class SignUpPage extends Component {
             }}
             style={{ borderRadius: 25, width: "15vw" }}
             className={classes.signUpButton}
+            onClick={this.onSubmit}
           >
-            Create Account
+            Register
           </Button>
           <p className={classes.createAccount}>
             Already have an account? <Link to="/">Sign In</Link>

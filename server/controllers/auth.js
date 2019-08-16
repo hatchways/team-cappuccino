@@ -1,5 +1,6 @@
 const User = require('../models/user');
-
+const expressJWT = require('express-jwt');
+const keys = require('../config/keys');
 
 // registering user
 exports.register = async (req, res) => {
@@ -31,17 +32,24 @@ exports.login =  async (req, res) => {
 }
 
 
-// logging out user
-exports.logout = async (req, res) => {
-  try {
-      req.user.tokens = req.user.tokens.filter(token => {
-          return token.token !== req.token;
-      });
+// requiring login 
+exports.requireSignin = expressJWT({
+  secret: keys.TOKEN_SECRET,
+  userProperty: "auth"
+});
 
-      await req.user.save();
-      res.send();
-  } catch(e) {
-    res.status(400).send({ error: e.message });
-  }
-}
+
+// logging out user
+// exports.logout = async (req, res) => {
+//   try {
+//       req.user.tokens = req.user.tokens.filter(token => {
+//           return token.token !== req.token;
+//       });
+
+//       await req.user.save();
+//       res.send();
+//   } catch(e) {
+//     res.status(400).send({ error: e.message });
+//   }
+// }
 

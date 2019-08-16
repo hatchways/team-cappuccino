@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-
+import { signin, authenticate } from '../components/auth';
 import { Button } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
 
 const loginPageStyle = theme => ({
@@ -42,8 +42,48 @@ const loginPageStyle = theme => ({
 });
 
 class LoginPage extends Component {
+  state = {
+    email: "",
+    password: "",
+    error: "",
+    redirectToReferer: false,
+    loading: false,
+  }
+
+
+  // input handling
+  handleChange = name => event => {
+    this.setState({ error: "" });
+    this.setState({ [name]: event.target.value });
+  };
+
+  // submit form
+  onSubmit = event => {
+    event.preventDefault();
+    this.setState({ loading: true });
+    const { email, password } = this.state;
+    const user = { email, password};
+
+    // sign in user
+    try {
+      signin(user).then(data => {
+        // if (data.error) this.setState({ error: data.error, loading: false });
+        console.log('User is logged in!');
+
+        // set token
+        authenticate(data.token, () => {
+          this.setState({ redirectToReferer: true });
+        });
+      })
+    } catch(e) {
+      console.log(e);
+    }
+  }
+
   render() {
     const { classes } = this.props;
+    const { email , password } = this.state;
+
     return (
       <div className={classes.signInContainer}>
         <div className={classes.signIn}>
@@ -54,12 +94,16 @@ class LoginPage extends Component {
             autoFocus="true"
             variant="outlined"
             className={classes.email}
+            value={email}
+            onChange={this.handleChange("email")}
           />
           <TextField
             id="Password"
             label="Password"
             variant="outlined"
             className={classes.password}
+            value={password}
+            onChange={this.handleChange("password")}
           />
           <Button
             variant="contained"
@@ -67,6 +111,7 @@ class LoginPage extends Component {
             buttonStyle={{ borderRadius: 25, width: "15vw" }}
             style={{ borderRadius: 25, width: "15vw" }}
             className={classes.loginButton}
+            onClick={this.onSubmit}
           >
             Login
           </Button>

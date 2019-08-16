@@ -3,32 +3,32 @@ const router = express.Router();
 const UserController = require('../controllers/user');
 const authMiddleware = require('../middleware/auth-middleware');
 
-// @route GET users
-router.get('', UserController.getAllUsers);
+// @route GET api/users
+router.get('/users', UserController.getAllUsers);
 
-// @route GET users/me/:id
-router.get('/me/:id', authMiddleware, UserController.getUser);
+// @route GET api/user/:id
+router.get('/user/:id', authMiddleware, UserController.getUser);
 
-// @route PATCH users/me/:id
-router.patch('/me/:id', authMiddleware, UserController.updateUser);
+// @route PATCH api/user/:id
+router.patch('/user/:id', authMiddleware, UserController.updateUser);
 
-// @route DELETE users/me
-router.delete('/me', authMiddleware, UserController.deleteUser);
+// @route DELETE api/user
+router.delete('/user', authMiddleware, UserController.deleteUser);
 
-// @route POST users/me/:id/avatar
-router.post('/me/:id/avatar', authMiddleware, UserController.uploadAvatar);
+// @route POST api/user/:id/avatar
+router.post('/user/:id/avatar', authMiddleware, UserController.uploadAvatar);
 
-// @route PUT users/follow
+// @route PUT api/user/follow
 router.put(
-    '/me/follow', 
+    '/user/follow', 
     authMiddleware, 
     UserController.addFollowing,
     UserController.addFollower
 );
 
-// @route PUT users/unfollow
+// @route PUT user/unfollow
 router.put(
-    '/me/unfollow', 
+    '/user/unfollow', 
     authMiddleware, 
     UserController.removeFollowing,
     UserController.removeFollower

@@ -40,12 +40,6 @@ const userSchema = new Schema({
         type: String,
         trim: true
     },
-    tokens: [{
-        token: {
-            type: String,
-            required: true
-        }
-    }],
     following: [{ 
         type: Schema.Types.ObjectId,
         ref: 'User'
@@ -99,7 +93,7 @@ userSchema.methods.getPublicProfile = function() {
 userSchema.methods.generateAuthToken = async function() {
     const user = this;
     const token = jwt.sign({ _id: user.id.toString() }, keys.TOKEN_SECRET, { expiresIn: '1h'});
-    user.tokens = user.tokens.concat({ token }); // assign token to user tokens
+
     await user.save(); 
 
     return token; 

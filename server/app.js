@@ -4,6 +4,7 @@ import express, { json, urlencoded } from "express";
 import { join } from "path";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
+import cors from 'cors';
 
 // routes
 import indexRouter from "./routes/index";
@@ -17,15 +18,17 @@ var app = express();
 
 // middlewares
 app.use(logger("dev"));
+app.use(cors())
 app.use(json());
 app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(join(__dirname, "public")));
 
+
 app.use("/", indexRouter);
 app.use("/ping", pingRouter);
-app.use("/users", authRouter);
-app.use("/users", userRouter);
+app.use("/user", authRouter);
+app.use("/api", userRouter);
 app.use("/api", listRouter);
 app.use("/api", itemRouter);
 
