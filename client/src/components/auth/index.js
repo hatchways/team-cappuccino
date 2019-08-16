@@ -3,7 +3,7 @@ import axios from 'axios';
 // sign up user
 export const signup = user => {
     return axios.post(`${process.env.REACT_APP_API_URL}/users/register`)
-        .then(res => res.data)
+        .then(res => res.json())
         .then(data => console.log(data))
         .catch(err => console.log(err))
 }
@@ -12,10 +12,8 @@ export const signup = user => {
 // sing in user
 export const signin = user => {
     return axios.post(`${process.env.REACT_APP_API_URL}/users/login`, user)
-        .then(res => res.data)
-        .then(data => {
-            return data;
-        })
+        .then(res => res.json())
+        .then(data => data)
         .catch(e => console.log(e));
 };
 
