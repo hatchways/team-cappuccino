@@ -13,6 +13,7 @@ import {
 import Add from "@material-ui/icons/Add";
 import { makeStyles } from "@material-ui/core/styles";
 import listImage from "../assets/shoppingPlaceHolder.png";
+import AddItem from "./AddItem.js";
 
 const profilePageStyles = makeStyles(theme => ({
   backgroundColor: {
@@ -90,6 +91,15 @@ const profilePageStyles = makeStyles(theme => ({
 
 function ProfilePage() {
   const [list, setList] = useState("");
+  const [openAddItem, setOpenAddItem] = React.useState(false);
+
+  function handleOpenAddItem() {
+    setOpenAddItem(true);
+  }
+
+  function handleCloseAddItem() {
+    setOpenAddItem(false);
+  }
 
   const handleChange = event => {
     setList(event.target.value);
@@ -149,10 +159,12 @@ function ProfilePage() {
                 borderRadius: 25,
                 width: "100px"
               }}
+              onClick={handleOpenAddItem}
               className={classes.addItemButton}
             >
               Add
             </Button>
+            <AddItem open={openAddItem} onClose={handleCloseAddItem} />
           </Paper>
         </Grid>
       </Grid>
