@@ -41,8 +41,11 @@ const signUpPageStyle = theme => ({
     backgroundColor: theme.primary,
     color: "white"
   },
-  createAccount: {
+  loginAccount: {
     marginTop: "30px"
+  },
+  loginLink: {
+    color: theme.primary
   }
 });
 
@@ -90,8 +93,11 @@ class SignUpPage extends Component {
           >
             Create Account
           </Button>
-          <p className={classes.createAccount}>
-            Already have an account? <Link to="/">Sign In</Link>
+          <p className={classes.loginAccount}>
+            Already have an account?{" "}
+            <Link to="/" className={classes.loginLink}>
+              Sign In
+            </Link>
           </p>
         </div>
       </div>
