@@ -154,7 +154,6 @@ function ProfilePage() {
             <Button
               variant="contained"
               size="large"
-              buttonStyle={{ borderRadius: 25, width: "30px" }}
               style={{
                 borderRadius: 25,
                 width: "100px"
