@@ -1,25 +1,31 @@
 import React from 'react';
 import { Route, Redirect } from "react-router-dom";
-import { isAuthenticated } from './index';
+import decode from 'jwt-decode';
 
 
-const PrivateRoute = ({ component: Component, ...otherComponents }) => (
-    <Route 
-        {...otherComponents}
-        render={props =>
-            isAuthenticated() ? (
-                <Component {...props} />
-            ) : (
-                <Redirect
-                    to={{
-                        pathname: "/",
-                        state: { from: props.location }
-                    }}
-                />
-            )
-        }
-    />
-)
+const checkAuth = () => {
+    const jwtToken = localStorage.getItem('jwtToken');
 
+    if (!jwtToken) return false;
 
-export default PrivateRoute;
+    try {
+        const { exp } = decode(jwtToken);
+        if (exp < new Date().getTime() / 1000) return false;
+
+    } catch(e) {
+        return false;
+    }
+
+    return true;
+}
+const PrivateRoute = ({ component: Component, ...rest }) => (
+    <Route {...rest} render={props => (
+        checkAuth() ? (
+          <Component {...props} />
+        ) : (
+            <Redirect to={{ pathname: '/' }} />
+          )
+      )} />
+);
+  
+  export default PrivateRoute;

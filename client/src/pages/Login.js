@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import { signin, authenticate } from '../components/auth';
+import { signin } from '../components/auth';
 import { Button } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
-import { Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
 
 const loginPageStyle = theme => ({
@@ -71,12 +71,8 @@ class LoginPage extends Component {
     try {
       signin(user).then(data => {
         // if (data.error) this.setState({ error: data.error, loading: false });
-        console.log('User is logged in!');
-
-        // set token
-        authenticate(data.token, () => {
-          this.setState({ redirectToReferer: true });
-        });
+        this.props.history.push('/profile');
+        console.log(data);
       })
     } catch(e) {
       console.log(e);

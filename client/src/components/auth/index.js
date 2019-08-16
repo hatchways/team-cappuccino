@@ -1,30 +1,27 @@
 import axios from 'axios';
 
+
+
 // sign up user
 export const signup = user => {
-    return axios.post(`${process.env.REACT_APP_API_URL}/users/register`)
-        .then(res => res.json())
-        .then(data => console.log(data))
+    return axios.post(`${process.env.REACT_APP_API_URL}/user/register`)
+        .then(res => console.log(res.data))
         .catch(err => console.log(err))
 }
 
 
 // sing in user
 export const signin = user => {
-    return axios.post(`${process.env.REACT_APP_API_URL}/users/login`, user)
-        .then(res => res.json())
-        .then(data => data)
+    return axios.post(`${process.env.REACT_APP_API_URL}/user/login`, user)
+        .then(res => {
+            const { token } = res.data;
+            localStorage.setItem("jwtToken", token);
+            
+            return res.data;
+        })
         .catch(e => console.log(e));
 };
 
-
-// decode token
-export const authenticate = (token, next) => {
-    if (typeof window !== "undefined") {
-        localStorage.setItem('token', token)
-        next();
-    }
-}
 
 // set user 
 export const setUser = (user, next) => {
@@ -39,7 +36,7 @@ export const isAuthenticated = () => {
     if(typeof window === "undefined") return false;
 
     if (localStorage.getItem("token")) {
-        return JSON.parse(localStorage.getItem("token"))
+        return localStorage.getItem("token")
     } else {
         return false;
     }
