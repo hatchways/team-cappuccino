@@ -63,6 +63,7 @@ exports.uploadAvatar = (req, res) => {
             // update User image
             const user = await User.findById(req.params.id);
             user.avatar = req.file.location;
+            user.save(); // save user
             res.status(200).json(user.getPublicProfile());
         });
     } catch(e) {

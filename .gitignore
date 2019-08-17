@@ -24,3 +24,4 @@ dev.js
 #TODO add .env to your gitignore
 
 
+server/config/dev.js

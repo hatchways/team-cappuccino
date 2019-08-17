@@ -6,7 +6,7 @@ const authMiddleware = require('../middleware/auth-middleware');
 // @route GET api/users
 router.get('/users', UserController.getAllUsers);
 
-// @route GET api/user/:id
+// @route GET user/:id
 router.get('/user/:id', authMiddleware, UserController.getUser);
 
 // @route PATCH api/user/:id
