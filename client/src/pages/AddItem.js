@@ -9,7 +9,8 @@ import { makeStyles } from "@material-ui/core/styles";
 const addItemStyles = makeStyles(theme => ({
   addNewItemFont: {
     fontSize: "1em",
-    fontWeight: 700
+    fontWeight: 700,
+    marginTop: "30px"
   },
   pasteLinkFont: {
     fontSize: ".8em",
@@ -25,9 +26,9 @@ const addItemStyles = makeStyles(theme => ({
     fontSize: ".8em",
     fontWeight: 400,
     marginTop: "40px",
-    marginBottom: "30px",
+    marginBottom: "60px",
     borderRadius: "25px",
-    width: "auto",
+    width: "130px",
     backgroundColor: theme.primary,
     color: "white"
   }
