@@ -60,7 +60,6 @@ function ImageUpload(props) {
               }}
             >
               <Wallpaper
-                htmlColor="grey"
                 style={{
                   width: "70px",
                   height: "70px",
