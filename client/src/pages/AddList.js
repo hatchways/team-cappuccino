@@ -62,7 +62,7 @@ function AddList(props) {
       }}
     >
       <DialogTitle>
-        <h1 className={classes.addNewItemFont}>Create new list</h1>
+        <p className={classes.addNewItemFont}>Create new list</p>
       </DialogTitle>
       <DialogContent
         style={{

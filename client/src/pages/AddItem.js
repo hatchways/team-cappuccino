@@ -87,7 +87,7 @@ function AddItem(props) {
       }}
     >
       <DialogTitle>
-        <h1 className={classes.addNewItemFont}>Add New Item</h1>
+        <p className={classes.addNewItemFont}>Add New Item</p>
       </DialogTitle>
       <DialogContent
         style={{
@@ -102,7 +102,10 @@ function AddItem(props) {
           Paste link to item
         </h3>
         <TextField
-          InputProps={{ disableUnderline: true, style: { width: "100%" } }}
+          InputProps={{
+            disableUnderline: true,
+            style: { width: "100%" }
+          }}
           inputProps={{ style: { textAlign: "center" } }}
           placeholder="Paste your link here"
           style={{

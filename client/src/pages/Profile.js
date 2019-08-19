@@ -80,8 +80,10 @@ function ProfilePage() {
     editList: false
   });
 
-  const handleModalState = modalName => prevState => {
-    setModalState({ ...prevState, [modalName]: !modalState[modalName] });
+  const handleModalState = modalName => event => {
+    setModalState(prevState => {
+      return { ...prevState, [modalName]: !modalState[modalName] };
+    });
   };
 
   const handleChange = event => {
@@ -154,6 +156,7 @@ function ProfilePage() {
       </Grid>
 
       <List modalState={modalState} handleModalState={handleModalState} />
+
     </div>
   );
 }
