@@ -94,7 +94,8 @@ function AddItem(props) {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          width: "95%"
+          width: "95%",
+          padding: "0px"
         }}
       >
         <h3 className={classes.pasteLinkFont} style={{ textAlign: "center" }}>
