@@ -6,13 +6,9 @@ import {
   Paper,
   InputBase,
   FormControl,
-  NativeSelect,
-  GridList,
-  GridListTile
+  NativeSelect
 } from "@material-ui/core";
-import Add from "@material-ui/icons/Add";
 import { makeStyles } from "@material-ui/core/styles";
-import listImage from "../assets/shoppingPlaceHolder.png";
 import AddItem from "./AddItem.js";
 import List from "./List.js";
 
@@ -156,7 +152,6 @@ function ProfilePage() {
       </Grid>
 
       <List modalState={modalState} handleModalState={handleModalState} />
-
     </div>
   );
 }

@@ -1,19 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 
-import {
-  Button,
-  Grid,
-  Paper,
-  InputBase,
-  FormControl,
-  NativeSelect,
-  GridList,
-  GridListTile
-} from "@material-ui/core";
+import { Grid, GridList, GridListTile } from "@material-ui/core";
 import Add from "@material-ui/icons/Add";
 import { makeStyles } from "@material-ui/core/styles";
 import listImage from "../assets/shoppingPlaceHolder.png";
-import AddItem from "./AddItem.js";
 import AddList from "./AddList.js";
 import EditList from "./EditList.js";
 
@@ -74,11 +64,11 @@ function List(props) {
       <GridList cellHeight={400}>
         {listNames.map(list => (
           <GridListTile
+            key={list}
             style={{
               padding: "0px",
               width: "288px",
               height: "400px"
-              // cursor: "pointer",
             }}
             className={classes.listTile}
             onClick={handleModalState("editList")}

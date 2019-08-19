@@ -2,11 +2,9 @@ import React from "react";
 
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent";
-import { Button, Paper, GridList, GridListTile } from "@material-ui/core";
+import { Button, GridList } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import listImage from "../assets/shoppingPlaceHolder.png";
-import AddItem from "./AddItem.js";
 
 const editListStyles = makeStyles(theme => ({
   titleFont: {
@@ -57,11 +55,8 @@ const editListStyles = makeStyles(theme => ({
   },
   imgContainerStyle: {
     width: "10vh",
-    // height: `calc(10vh * .9)`,
-    // margin: `calc(10vh * .1)`,
     height: "100%",
     overflow: "hidden"
-    // borderRadius: "5px"
   },
   imgStyle: {
     width: "100%"
@@ -134,6 +129,7 @@ function EditList(props) {
         <GridList cols={1} className={classes.gridListStyles}>
           {list.map(item => (
             <div
+              key={item}
               className={classes.tileStyle}
               style={{ height: "10vh", padding: `calc(10vh * .1)` }}
             >
@@ -141,7 +137,7 @@ function EditList(props) {
                 <div className={classes.imgContainerStyle}>
                   <img
                     src={listImage}
-                    alt="item image"
+                    alt="item"
                     className={classes.imgStyle}
                   />
                 </div>
