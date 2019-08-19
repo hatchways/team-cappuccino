@@ -97,8 +97,10 @@ function ProfilePage() {
     addList: false
   });
 
-  const handleModalState = modalName => prevState => {
-    setModalState({ ...prevState, [modalName]: !modalState[modalName] });
+  const handleModalState = modalName => event => {
+    setModalState(prevState => {
+      return { ...prevState, [modalName]: !modalState[modalName] };
+    });
   };
 
   const handleChange = event => {
@@ -178,6 +180,7 @@ function ProfilePage() {
             <GridListTile
               style={{ padding: "0px", width: "288px", height: "400px" }}
               className={classes.listTile}
+              key={list}
             >
               <Grid container direction="row" justify="center">
                 <div
