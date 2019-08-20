@@ -8,7 +8,7 @@ import LoginPage from "./pages/Login";
 import SignUpPage from "./pages/Signup";
 import ProfilePage from "./pages/Profile";
 import Header from "./pages/Header";
-import FriendsPage from "./pages/Friends/Friends";
+import FriendsPage from "./pages/Friends";
 
 import "./App.css";
 

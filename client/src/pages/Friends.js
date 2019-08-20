@@ -1,8 +1,16 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/styles";
-import { Tabs, Tab, Avatar, Button } from "@material-ui/core";
+import {
+  Tabs,
+  Tab,
+  Avatar,
+  Button,
+  TextField,
+  InputAdornment
+} from "@material-ui/core";
 import AccountCircle from "@material-ui/icons/AccountCircle";
-import "./ScrollDisable.css";
+import SearchIcon from "@material-ui/icons/Search";
+import CancelIcon from "@material-ui/icons/Cancel";
 
 const friendsPageStyles = makeStyles(theme => ({
   pageContainer: {
@@ -35,15 +43,17 @@ const friendsPageStyles = makeStyles(theme => ({
   peopleContainer: {
     width: "100%",
     height: "60vh",
-    // display: "flex",
-    // flexDirection: "column",
     overflowY: "scroll",
     scrollbarWidth: "none",
     msOverflowStyle: "none",
-    "$-webkit-scrollbar": {
-      width: "0px",
-      height: "0px"
+    "&::-webkit-scrollbar": {
+      width: "0px"
     }
+  },
+  searchStyle: {
+    width: "100%",
+    background: "white",
+    margin: "0px 0px 1px 0px"
   },
   peopleCard: {
     width: "100%",
@@ -82,19 +92,24 @@ const friendsPageStyles = makeStyles(theme => ({
 function FriendsPage() {
   const classes = friendsPageStyles();
   const [currentTab, setTab] = useState(0);
+  const [currentSearch, setSearch] = useState("");
 
   function handleChange(event, newTab) {
     setTab(newTab);
   }
 
+  function handleSearchChange(event) {
+    setSearch(event.target.value);
+  }
+
   const followingList = [
-    "following person",
-    "following person",
-    "following person",
-    "following person",
-    "following person",
-    "following person",
-    "following person"
+    "following person 1",
+    "following person 2",
+    "following person 3",
+    "following person 3",
+    "following person 3",
+    "following person 4",
+    "following person 5"
   ];
   const suggestedList = [
     "suggested person",
@@ -124,9 +139,54 @@ function FriendsPage() {
   }
 
   function makePeoples(list) {
-    return list.map((person, index) => (
-      <PeopleCard key={index} name={person} />
-    ));
+    return list
+      .filter(person => person.includes(currentSearch))
+      .map((person, index) => <PeopleCard key={index} name={person} />);
+  }
+
+  function SearchArea() {
+    return (
+      <>
+        <div className={classes.peopleContainer}>
+          <TextField
+            value={currentSearch}
+            autoFocus={true}
+            placeholder="search"
+            className={classes.searchStyle}
+            onChange={handleSearchChange}
+            InputProps={{
+              disableUnderline: true,
+              startAdornment: (
+                <InputAdornment
+                  position="start"
+                  style={{ color: "silver", margin: "0px 5px 0px 10px" }}
+                >
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+              endAdornment: (
+                <InputAdornment
+                  position="end"
+                  style={{
+                    color: "silver",
+                    margin: "0px 5px 0px 0px",
+                    cursor: "pointer"
+                  }}
+                  onClick={() => setSearch("")}
+                >
+                  <CancelIcon />
+                </InputAdornment>
+              ),
+              style: { height: "50px" }
+            }}
+          />
+
+          {currentTab === 1
+            ? makePeoples(suggestedList)
+            : makePeoples(followingList)}
+        </div>
+      </>
+    );
   }
 
   return (
@@ -142,11 +202,7 @@ function FriendsPage() {
           <Tab label="following" className={classes.tabStyle} />
           <Tab label="suggested" className={classes.tabStyle} />
         </Tabs>
-        <div className="peopleContainer">
-          {currentTab === 1
-            ? makePeoples(followingList)
-            : makePeoples(suggestedList)}
-        </div>
+        <SearchArea />
       </div>
     </div>
   );
