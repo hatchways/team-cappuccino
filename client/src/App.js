@@ -8,6 +8,7 @@ import LoginPage from "./pages/Login";
 import SignUpPage from "./pages/Signup";
 import ProfilePage from "./pages/Profile";
 import Header from "./pages/Header";
+import FriendsPage from "./pages/Friends";
 
 import "./App.css";
 
@@ -21,6 +22,7 @@ function App() {
           <Route exact path="/" component={LoginPage} />
           <Route path="/signup" component={SignUpPage} />
           <Route path="/profile" component={ProfilePage} />
+          <Route path="/friends" component={FriendsPage} />
         </Switch>
       </BrowserRouter>
     </MuiThemeProvider>
