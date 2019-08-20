@@ -1,6 +1,6 @@
 import React from "react";
-
 import { AppBar, Button, Toolbar, Grid, Badge } from "@material-ui/core";
+import { withRouter } from 'react-router';
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import AppIcon from "../assets/logo.png";
@@ -69,7 +69,7 @@ const StyledBadge = withStyles(theme => ({
 function Header(props) {
   const classes = headerStyles();
   const { location } = props;
-  console.log(location.pathname);
+
   return (
     <AppBar className={classes.topBar}>
       <Toolbar style={{ backgroundColor: "white" }}>
@@ -97,6 +97,9 @@ function Header(props) {
             </StyledBadge>
             <AccountCircle className={classes.accountCircle} />
             <Button className={classes.profile}>Profile</Button>
+            <Button 
+            className={classes.profile}
+            onClick={() => props.signout}>Sign Out</Button>
           </div>
         )}
       </Toolbar>
@@ -104,4 +107,4 @@ function Header(props) {
   );
 }
 
-export default Header;
+export default withRouter(Header);

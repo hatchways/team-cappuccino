@@ -1,6 +1,5 @@
 const User = require('../models/user');
-const expressJWT = require('express-jwt');
-const keys = require('../config/keys');
+
 
 // registering user
 exports.register = async (req, res) => {
@@ -10,46 +9,25 @@ exports.register = async (req, res) => {
   try {
       // save user
       await user.save();
-      res.status(201).send(user.getPublicProfile());
+      res.status(201).json(user.getPublicProfile());
   } catch(e) {
-      res.status(400).send({ error: e.message });
+      res.status(400).json({ error: 'Email is already registered!' });
   };
 };
 
 
 // logging in user
-exports.login =  async (req, res) => {
-  try {
-      // get password and email
-      const user = await User.findByCredentials(req.body.email, req.body.password);
-      // assign token 
-      const token = await user.generateAuthToken();
-      
-      res.send({ user: user.getPublicProfile(), token });// return user
-  } catch(e) {
-    res.status(400).send({ error: e.message });
-  }
+exports.login = async (req, res) => {
+    try {
+        // get password and email
+        const user = await User.findByCredentials(req.body.email, req.body.password);
+        // assign token 
+        const token = await user.generateAuthToken();
+        
+        res.json({ user: user.getPublicProfile(), token });// return user
+    } catch(e) {
+      res.status(400).send({ error: 'Password or Email is not correct!' });
+    }
 }
 
-
-// requiring login 
-exports.requireSignin = expressJWT({
-  secret: keys.TOKEN_SECRET,
-  userProperty: "auth"
-});
-
-
-// logging out user
-// exports.logout = async (req, res) => {
-//   try {
-//       req.user.tokens = req.user.tokens.filter(token => {
-//           return token.token !== req.token;
-//       });
-
-//       await req.user.save();
-//       res.send();
-//   } catch(e) {
-//     res.status(400).send({ error: e.message });
-//   }
-// }
 

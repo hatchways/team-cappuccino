@@ -27,8 +27,8 @@ app.use(express.static(join(__dirname, "public")));
 
 app.use("/", indexRouter);
 app.use("/ping", pingRouter);
-app.use("/user", authRouter);
-app.use("", userRouter);
+app.use("/api", authRouter);
+app.use("/api", userRouter);
 app.use("/api", listRouter);
 app.use("/api", itemRouter);
 

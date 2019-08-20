@@ -6,7 +6,7 @@ const singleUpload = upload.single('image');
 // get user info
 exports.getUser = async (req,res) => {
     try {
-        const user = await User.findById(req.params.id);
+        const user = await User.findById(req.user.id);
 
         if(!user) return res.status(400).send({ error: 'User is not found!'});
 
