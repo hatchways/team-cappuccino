@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import { withRouter } from 'react-router-dom';
 import {
   Button,
   Grid,
@@ -156,4 +156,4 @@ function ProfilePage() {
   );
 }
 
-export default ProfilePage;
+export default withRouter(ProfilePage);

@@ -1,8 +1,11 @@
 const mongoose = require('mongoose');
+const keys = require('../config/keys');
 
 // Connecting mongoose
-mongoose.connect(process.env.MONGO_DB, {
+mongoose.connect(keys.MONGO_URI, {
     useNewUrlParser: true,
     useCreateIndex: true,
-    useFindAndModify: true
-});
+    useFindAndModify: false
+})
+    .then(() => console.log(`Connecting to mongodb!`))
+    .catch(e => console.error(e.message));

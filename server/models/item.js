@@ -1,25 +1,31 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const List = require('./list');
+const User = require('./user');
 
 
-const productSchema = new Schema({
+const itemSchema = new Schema({
     name: {
         type: String,
         required: true,
         trim: true
     },
-    price: {
-        type: Number,
-        required: true
-    },
-    updatePrice: {
-        type: Number
-    },
-    link: {
+    price: [{
+        date: {
+            type: Date,
+            default: Date.now
+        },
+        price: Number,
+        _id: false
+    }],
+    url: {
         type: String,
         required: true,
         trim: true
     }, 
+    image: {
+        type: String,
+    },
     user: {
         type: Schema.Types.ObjectId,
         ref: 'User'
@@ -31,4 +37,5 @@ const productSchema = new Schema({
 });
 
 
-module.exports = mongoose.model('Product', productSchema);
+
+module.exports = mongoose.model('Item', itemSchema);
