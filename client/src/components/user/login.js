@@ -67,20 +67,24 @@ class Login extends React.Component {
     login(user).then(data => {
       if (data.error) {
         this.setState({ error: data.error, loading: false });
-      } else {
-        authenticate(data, () => {
-          this.setState({ redirectToReferer: true });
-        });
       }
+      // authenticate data
+      authenticate(data, () => {
+        this.setState({
+          redirectToReferer: true,
+          loading: false
+        });
+      });
     });
   };
 
   render() {
     const { email, password, error, loading, redirectToReferer } = this.state;
+    console.log(this.state);
     const { classes } = this.props;
 
-    if(redirectToReferer) {
-      return <Redirect to="/profile" />
+    if (redirectToReferer) {
+      return <Redirect to="/profile" />;
     }
 
     return (

@@ -79,6 +79,10 @@ function Header(props) {
           spacing={2}
           alignItems="center"
           edge="start"
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            props.history.push("/profile");
+          }}
         >
           <Grid item>
             <img src={AppIcon} alt="logo" className={classes.logo} />
@@ -91,7 +95,14 @@ function Header(props) {
         {location.pathname !== "/" && location.pathname !== "/signup" && (
           <div className={classes.grow}>
             <Button className={classes.label}>Shopping List</Button>
-            <Button className={classes.label}>Friends</Button>
+            <Button
+              className={classes.label}
+              onClick={() => {
+                props.history.push("/friends");
+              }}
+            >
+              Friends
+            </Button>
             <StyledBadge variant="dot">
               <Button className={classes.label}>Notifications</Button>
             </StyledBadge>

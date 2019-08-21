@@ -32,6 +32,7 @@ export const authenticate = (token, next) => {
     if(typeof window !== "undefined") {
         localStorage.setItem("token", JSON.stringify(token))
     };
+    next();
 }
 
 export const logout = () => {

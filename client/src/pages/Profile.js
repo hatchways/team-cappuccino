@@ -6,14 +6,11 @@ import {
   Paper,
   InputBase,
   FormControl,
-  NativeSelect,
-  GridList,
-  GridListTile
+  NativeSelect
 } from "@material-ui/core";
-import Add from "@material-ui/icons/Add";
 import { makeStyles } from "@material-ui/core/styles";
-import listImage from "../assets/shoppingPlaceHolder.png";
 import AddItem from "./AddItem.js";
+import List from "./List.js";
 
 const profilePageStyles = makeStyles(theme => ({
   backgroundColor: {
@@ -68,45 +65,28 @@ const profilePageStyles = makeStyles(theme => ({
     backgroundColor: theme.primary,
     fontSize: ".8em",
     color: "white"
-  },
-  shoppingListsContainer: {
-    marginLeft: "10vw",
-    marginRight: "10vw",
-    marginTop: "10vh"
-  },
-  shoppingListText: {
-    font: theme.typography.fontFamily,
-    fontSize: "2em",
-    fontWeight: 500,
-    letterSpacing: "0em",
-    color: "black"
-  },
-  listTile: {
-    backgroundColor: "white",
-    marginRight: "20px",
-    borderRadius: "15px",
-    marginTop: "20px"
   }
 }));
 
 function ProfilePage() {
   const [list, setList] = useState("");
-  const [openAddItem, setOpenAddItem] = React.useState(false);
+  const [modalState, setModalState] = React.useState({
+    addItem: false,
+    addList: false,
+    editList: false
+  });
 
-  function handleOpenAddItem() {
-    setOpenAddItem(true);
-  }
-
-  function handleCloseAddItem() {
-    setOpenAddItem(false);
-  }
+  const handleModalState = modalName => event => {
+    setModalState(prevState => {
+      return { ...prevState, [modalName]: !modalState[modalName] };
+    });
+  };
 
   const handleChange = event => {
     setList(event.target.value);
   };
 
   const listOptions = ["a", "b", "c"];
-  const listNames = ["Clothes", "Furniture", "Luxury"];
 
   const classes = profilePageStyles();
 
@@ -158,76 +138,20 @@ function ProfilePage() {
                 borderRadius: 25,
                 width: "100px"
               }}
-              onClick={handleOpenAddItem}
+              onClick={handleModalState("addItem")}
               className={classes.addItemButton}
             >
               Add
             </Button>
-            <AddItem open={openAddItem} onClose={handleCloseAddItem} />
+            <AddItem
+              open={modalState.addItem}
+              onClose={handleModalState("addItem")}
+            />
           </Paper>
         </Grid>
       </Grid>
 
-      <div className={classes.shoppingListsContainer}>
-        <h1 className={classes.shoppingListText}>My Shopping Lists:</h1>
-        <GridList cellHeight={400}>
-          {listNames.map(list => (
-            <GridListTile
-              style={{ padding: "0px", width: "288px", height: "400px" }}
-              className={classes.listTile}
-            >
-              <Grid container direction="row" justify="center">
-                <div
-                  style={{
-                    height: "300px",
-                    overflow: "hidden",
-                    borderRadius: "15px 15px 0px 0px"
-                  }}
-                >
-                  <img src={listImage} alt="list" width="100%" />
-                </div>
-                <h2
-                  style={{
-                    width: "100%",
-                    marginBottom: "0px",
-                    alignSelf: "center",
-                    textAlign: "center"
-                  }}
-                >
-                  {list}
-                </h2>
-                <h3 style={{ marginTop: "10px" }}>x items</h3>
-              </Grid>
-            </GridListTile>
-          ))}
-          <GridListTile
-            style={{
-              padding: "0px",
-              width: "288px",
-              height: "400px",
-              marginTop: "20px"
-            }}
-          >
-            <Grid
-              container
-              direction="column"
-              justify="center"
-              alignItems="center"
-              style={{
-                backgroundColor: "white",
-                width: "100%",
-                height: "100%",
-                borderRadius: "15px 15px 15px 15px"
-              }}
-            >
-              <Button style={{ width: "30px" }}>
-                <Add style={{ width: "2em", height: "2em" }} />
-              </Button>
-              <h1 style={{ textAlign: "center" }}>Add New List</h1>
-            </Grid>
-          </GridListTile>
-        </GridList>
-      </div>
+      <List modalState={modalState} handleModalState={handleModalState} />
     </div>
   );
 }
