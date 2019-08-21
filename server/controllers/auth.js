@@ -19,8 +19,10 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   const { email, password } = req.body;
 
+  if(!email || !password) return "";
+
   User.findOne({ email }, (err, user) => {
-    if(err || !user) return res.status(401).json({
+    if(err || !user) return res.status(400).json({
       error: 'Email is not registered!'
     });
 

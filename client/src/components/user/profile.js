@@ -1,14 +1,18 @@
 import React from 'react';
 import { getUser } from '../api';
 import { isAuthenticated } from '../auth';
+import { withStyles } from "@material-ui/core/styles";
 
 
+const ProfileContainer = theme => ({
+    
+})
 class Profile extends React.Component {
     state={
         user: "",
         error: ""
     }
-    
+
     componentDidMount() {
         const token = isAuthenticated().token;
         getUser(token).then(data => {

@@ -2,7 +2,6 @@ import React, { Fragment } from "react";
 import { MuiThemeProvider } from "@material-ui/core";
 import { theme } from "./themes/theme";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
-import { isAuthenticated } from './components/auth';
 import LoginPage from "./pages/Login";
 import SignUpPage from "./pages/Signup";
 import ProfilePage from './components/user/profile';
@@ -17,12 +16,13 @@ import LoggedInRoute from "./components/auth/LoggedinRoute";
 
 
  class App extends React.Component{
+  
   render() {
   return (
     <MuiThemeProvider theme={theme}>
       <BrowserRouter>
         <Fragment>
-          <Header  /> 
+          <Header /> 
           <Switch>
             <Route exact path="/" render={() => <Redirect to="/login" />} />
             {/* Auth routes */}

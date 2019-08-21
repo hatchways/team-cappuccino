@@ -1,9 +1,12 @@
 import React from "react";
+import { isAuthenticated } from "../components/auth";
 import { AppBar, Button, Toolbar, Grid, Badge } from "@material-ui/core";
-import { withRouter } from 'react-router';
+import { withRouter } from "react-router";
+import { logout } from "../components/auth";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import AppIcon from "../assets/logo.png";
+import HeaderDropDown from "../components/header/header-dropdown";
 
 const headerStyles = makeStyles(theme => ({
   topBar: {
@@ -19,7 +22,7 @@ const headerStyles = makeStyles(theme => ({
   label: {
     marginLeft: "15px",
     font: theme.typography.fontFamily,
-    fontSize: ".6em",
+    fontSize: ".8em",
     fontWeight: 250,
     letterSpacing: "0em",
     color: "black",
@@ -44,8 +47,7 @@ const headerStyles = makeStyles(theme => ({
   accountCircle: {
     color: theme.primary,
     width: "1.5em",
-    height: "1.5em",
-    marginLeft: "40px"
+    height: "1.5em"
   },
   profile: {
     marginLeft: "5px",
@@ -66,9 +68,8 @@ const StyledBadge = withStyles(theme => ({
   }
 }))(Badge);
 
-function Header(props) {
+const Header = props => {
   const classes = headerStyles();
-  const { location } = props;
 
   return (
     <AppBar className={classes.topBar}>
@@ -92,9 +93,13 @@ function Header(props) {
           </Grid>
         </Grid>
 
-        {location.pathname !== "/" && location.pathname !== "/signup" && (
+        {isAuthenticated() ? (
           <div className={classes.grow}>
-            <Button className={classes.label}>Shopping List</Button>
+            <AccountCircle className={classes.accountCircle} />
+            <HeaderDropDown />
+            <StyledBadge variant="dot">
+              <Button className={classes.label}>Notifications</Button>
+            </StyledBadge>
             <Button
               className={classes.label}
               onClick={() => {
@@ -103,19 +108,17 @@ function Header(props) {
             >
               Friends
             </Button>
-            <StyledBadge variant="dot">
-              <Button className={classes.label}>Notifications</Button>
-            </StyledBadge>
-            <AccountCircle className={classes.accountCircle} />
-            <Button className={classes.profile}>Profile</Button>
-            <Button 
-            className={classes.profile}
-            onClick={() => props.signout}>Sign Out</Button>
+            <Button
+              className={classes.label}
+              onClick={() => logout(props.history)}
+            >
+              Sign Out
+            </Button>
           </div>
-        )}
+        ) : null}
       </Toolbar>
     </AppBar>
   );
-}
+};
 
 export default withRouter(Header);

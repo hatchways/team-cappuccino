@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, Redirect } from "react-router-dom";
+import { withRouter } from "react-router";
 import { authenticate, login } from "../auth";
 import { Button } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
@@ -80,7 +81,6 @@ class Login extends React.Component {
 
   render() {
     const { email, password, error, loading, redirectToReferer } = this.state;
-    console.log(this.state);
     const { classes } = this.props;
 
     if (redirectToReferer) {
@@ -144,4 +144,4 @@ class Login extends React.Component {
   }
 }
 
-export default withStyles(FormContainer)(Login);
+export default withRouter(withStyles(FormContainer)(Login));
