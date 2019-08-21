@@ -1,33 +1,38 @@
-const User = require('../models/user');
+const User = require("../models/user");
 
 
 // registering user
 exports.register = async (req, res) => {
+  // check if user exists or not
+  const userExisted = await User.findOne({ email: req.body.email });
+  // check user
+  if (userExisted) return res.status(403).json({ error: "Email is already registered." });
+
   // create new user
   const user = new User(req.body);
-
-  try {
-      // save user
-      await user.save();
-      res.status(201).json(user.getPublicProfile());
-  } catch(e) {
-      res.status(400).json({ error: 'Email is already registered!' });
-  };
+  await user.save();
+  res.status(201).json({ message: "Account is created. Please log in now!" });
 };
 
 
 // logging in user
 exports.login = async (req, res) => {
-    try {
-        // get password and email
-        const user = await User.findByCredentials(req.body.email, req.body.password);
-        // assign token 
-        const token = await user.generateAuthToken();
-        
-        res.json({ user: user.getPublicProfile(), token });// return user
-    } catch(e) {
-      res.status(400).send({ error: 'Password or Email is not correct!' });
-    }
-}
+  const { email, password } = req.body;
 
+  User.findOne({ email }, (err, user) => {
+    if(err || !user) return res.status(401).json({
+      error: 'Email is not registered!'
+    });
 
+    if(!user.authenticate(password)) return res.status(401).json({
+      error: 'Email or Password is not matching'
+    });
+
+    // genrate token 
+    const token = user.generateToken();
+    const { _id, name, email } = user;
+    res.json({ 
+      user: { _id, name, email }, 
+    token});
+  })
+};

@@ -4,28 +4,22 @@ const upload = require('../services/image-upload');
 const singleUpload = upload.single('image');
 
 // get user info
-exports.getUser = async (req,res) => {
-    try {
-        const user = await User.findById(req.user.id);
-
-        if(!user) return res.status(400).send({ error: 'User is not found!'});
-
+exports.getUser = (req, res) => {
+    User.findById(req.user.id).populate("following", "_id name").populate("followers", "_id name").exec((err, user) => {
+        if(err || !user) return res.status(400).json({ error: "User is not found!" });
         // return user
-        res.status(200).json(user.getPublicProfile());
-    } catch(e) {
-        res.status(400).send({ error: e.message});
-    }
-}
+        const { _id, name, email, avatar, joined,following, followers } = user;
+        res.status(200).json({ _id, name, email, avatar, joined, following, followers });
+    });
+};
 
 
 // get all users
 exports.getAllUsers = async (req, res) => {
-    try {
-        const users = await User.find({}).select('_id name email avatar following followers');
-        res.status(200).json(users);
-    } catch(e) {
-        res.status(400).send({ error: e.message});
-    }
+    User.find((err , users) => {
+        if(err) return res.status(400).json({ error: err });
+        res.json(users);
+    }).select(' name email avatar joined');
 };
 
 
@@ -37,7 +31,8 @@ exports.updateUser = async (req, res) => {
 
         // save and return user
         await req.user.save();
-        res.status(201).json(req.user.getPublicProfile());
+        const { _id, name, email } = req.user;
+        res.status(201).json({ _id, name, email });
     } catch(e) {
         res.status(400).send({ error: e.message});
     }
@@ -46,13 +41,12 @@ exports.updateUser = async (req, res) => {
 
 // delete user
 exports.deleteUser = async (req, res) => {
-    try {
-        await req.user.remove();
-        res.status(200).json(req.user.getPublicProfile());
-    } catch(e) {
-        res.status(400).send({ error: e.message});
-    }
+    await req.user.remove((err, user) => {
+        if(err) return res.status(400).json({ error: err });
+        res.status(200).json({ message: 'Account is deleted.' });
+    });
 }
+
 
 // upload user avatar
 exports.uploadAvatar = (req, res) => {
