@@ -4,7 +4,8 @@ import { theme } from "./themes/theme";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import LoginPage from "./pages/Login";
 import SignUpPage from "./pages/Signup";
-import ProfilePage from "./pages/Profile";
+import ProfilePage from './components/user/profile';
+import ListPage from "./pages/Profile";
 import Header from "./pages/Header";
 import PrivateRoute from './components/auth/PrivateRoute';
 import "./App.css";
@@ -21,6 +22,7 @@ const App = () =>{
               <Route exact path="/" component={LoginPage} />
               <Route exact path="/register" component={SignUpPage} />
               <PrivateRoute exact path="/profile" component={ProfilePage} />
+              <PrivateRoute exact path="/lists" component={ListPage} />
             </Switch>
           </Fragment>
           </BrowserRouter>
