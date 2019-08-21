@@ -1,6 +1,6 @@
 import React from 'react';
 import { getUser } from '../api';
-import { isAuthenticated } from '../auth';
+import { isAuthenticated, logout } from '../auth';
 
 
 class Profile extends React.Component {
@@ -28,6 +28,7 @@ class Profile extends React.Component {
             <div>
                 <h1>Profile Page</h1>
                 <h1>Name: {user.name}</h1>
+                <button onClick={() => {logout(); this.props.history.push('/')}}>Logout</button>
             </div>
         )
     }
