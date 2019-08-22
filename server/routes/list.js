@@ -19,5 +19,8 @@ router.patch('/lists/:id', authMiddleWare, ListController.updateList);
 // @route DELETE /api/lists:id
 router.delete('/lists/:id', authMiddleWare, ListController.deleteList);
 
+// @route POST /api/lists:id
+router.delete('/lists/:id/image', authMiddleWare, ListController.uploadListImage);
+
 
 module.exports = router;
