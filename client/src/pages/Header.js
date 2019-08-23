@@ -1,6 +1,6 @@
 import React from "react";
 import { AppBar, Button, Toolbar, Grid, Badge } from "@material-ui/core";
-import { withRouter } from 'react-router';
+import { withRouter } from "react-router";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import AppIcon from "../assets/logo.png";
@@ -94,7 +94,14 @@ function Header(props) {
 
         {location.pathname !== "/" && location.pathname !== "/signup" && (
           <div className={classes.grow}>
-            <Button className={classes.label}>Shopping List</Button>
+            <Button
+              className={classes.label}
+              onClick={() => {
+                props.history.push("/lists");
+              }}
+            >
+              Shopping List
+            </Button>
             <Button
               className={classes.label}
               onClick={() => {
@@ -108,9 +115,9 @@ function Header(props) {
             </StyledBadge>
             <AccountCircle className={classes.accountCircle} />
             <Button className={classes.profile}>Profile</Button>
-            <Button 
-            className={classes.profile}
-            onClick={() => props.signout}>Sign Out</Button>
+            <Button className={classes.profile} onClick={() => props.signout}>
+              Sign Out
+            </Button>
           </div>
         )}
       </Toolbar>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { withRouter } from 'react-router-dom';
+import { withRouter } from "react-router-dom";
 import {
   Button,
   Grid,
@@ -9,7 +9,7 @@ import {
   NativeSelect
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import AddItem from "./AddItem.js";
+import AddItem from "../components/items/AddItem.js";
 import List from "./List.js";
 
 const profilePageStyles = makeStyles(theme => ({
