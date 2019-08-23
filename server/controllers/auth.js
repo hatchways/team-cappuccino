@@ -32,9 +32,9 @@ exports.login = async (req, res) => {
 
     // genrate token 
     const token = user.generateToken();
-    const { _id, name, email } = user;
+    const { _id, name, email, lists } = user;
     res.json({ 
-      user: { _id, name, email }, 
+      user: { _id, name, email, lists }, 
     token});
   })
 };

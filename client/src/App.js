@@ -5,16 +5,22 @@ import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import LoginPage from "./pages/Login";
 import SignUpPage from "./pages/Signup";
 import ProfilePage from "./components/user/profile";
-import ListPage from "./pages/Profile";
+import ListPage from "./pages/Lists";
 import Header from "./pages/Header";
 import FriendsPage from "./pages/Friends";
 import PrivateRoute from "./components/auth/PrivateRoute";
 import "./App.css";
 import LoggedInRoute from "./components/auth/LoggedinRoute";
-
-
+import setAuthToken from "./components/utils/setAuthToken";
+import { isAuthenticated } from "./components/auth";
 
 class App extends React.Component {
+  componentDidMount() {
+    const token = isAuthenticated().token;
+    if (isAuthenticated()) {
+      setAuthToken(token);
+    }
+  }
   render() {
     return (
       <MuiThemeProvider theme={theme}>

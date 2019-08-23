@@ -6,7 +6,8 @@ import { withStyles } from "@material-ui/core/styles";
 
 const ProfileContainer = theme => ({
     
-})
+});
+
 class Profile extends React.Component {
     state={
         user: "",
@@ -15,7 +16,9 @@ class Profile extends React.Component {
 
     componentDidMount() {
         const token = isAuthenticated().token;
-        getUser(token).then(data => {
+        const userId = isAuthenticated().user._id;
+
+        getUser(userId, token).then(data => {
             if(data.error){
                 this.setState({ error: data.error })
             } else {

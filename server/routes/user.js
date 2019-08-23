@@ -7,16 +7,16 @@ const authMiddleware = require('../middleware/auth-middleware');
 router.get('/users', UserController.getAllUsers);
 
 // @route GET user/:id
-router.get('/user', authMiddleware, UserController.getUser);
+router.get('/user/:userId', authMiddleware, UserController.getUser);
 
 // @route PATCH api/user/:id
-router.patch('/user/:id', authMiddleware, UserController.updateUser);
+router.patch('/user/:userId', authMiddleware, UserController.updateUser);
 
 // @route DELETE api/user
-router.delete('/user', authMiddleware, UserController.deleteUser);
+router.delete('/user/:userId', authMiddleware, UserController.deleteUser);
 
 // @route POST api/user/:id/avatar
-router.post('/user/:id/avatar', authMiddleware, UserController.uploadAvatar);
+router.post('/user/:userId/avatar', authMiddleware, UserController.uploadAvatar);
 
 // @route PUT api/user/follow
 router.put(
@@ -33,6 +33,11 @@ router.put(
     UserController.removeFollowing,
     UserController.removeFollower
 )
+
+// @route param
+router.param("userId", UserController.userById);
+
+
 module.exports = router;
 
 
