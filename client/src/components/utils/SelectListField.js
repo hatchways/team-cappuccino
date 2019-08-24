@@ -4,13 +4,26 @@ import { TextField } from "@material-ui/core";
 
 function SelectListField(props) {
   const [list, setList] = useState("");
-  const {
-    listValues,
-    promptText,
-    onChangeHandler,
-    startingValue,
-    fillWidthOf
-  } = props;
+  const { listValues, promptText, onChangeHandler, fillWidthOf } = props;
+  let { startingValue, fontSize, alignTextTo, textPadding } = props;
+
+  if (startingValue === undefined) {
+    startingValue = { name: "", _id: "" };
+  } else {
+    onChangeHandler(startingValue);
+  }
+
+  if (fontSize === undefined) {
+    fontSize = "1rem";
+  }
+
+  if (alignTextTo === undefined) {
+    alignTextTo = "center";
+  }
+
+  if (textPadding === undefined) {
+    textPadding = "0px";
+  }
 
   useEffect(() => {
     if (
@@ -37,8 +50,9 @@ function SelectListField(props) {
           native: true,
           style: {
             width: "100%",
-            textAlignLast: "center",
-            color: "grey"
+            textAlignLast: alignTextTo,
+            color: "grey",
+            padding: textPadding
           },
           inputProps: {
             style: {
@@ -50,8 +64,9 @@ function SelectListField(props) {
           native: true,
           style: {
             width: "100%",
-            textAlignLast: "center",
-            color: "black"
+            textAlignLast: alignTextTo,
+            color: "black",
+            padding: textPadding
           },
           inputProps: {
             style: {
@@ -73,11 +88,10 @@ function SelectListField(props) {
         borderRadius: "5px",
         display: "flex",
         flexDirection: "column",
-        alignItems: "center",
         justifyContent: "center"
       }}
       InputProps={{ disableUnderline: true }}
-      inputProps={{ style: { paddingRight: "0px" } }}
+      inputProps={{ style: { paddingRight: "0px", fontSize: fontSize } }}
       SelectProps={GenerateSelectProps()}
     >
       <option value="" disabled>

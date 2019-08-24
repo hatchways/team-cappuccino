@@ -9,12 +9,8 @@ export default function SnackBar(props) {
   const horizontal = "center";
 
   function handleClose() {
-    // setState({ ...state, open: false });
     onClose();
   }
-
-  // if(newVertical != undefined){setState({vertical: newVertical, ...state});}
-  // if(newHorizontal != undefined){setState({horizontal: newHorizontal, ...state})}
 
   return (
     <Snackbar

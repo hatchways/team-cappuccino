@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import { TextField, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import ImageUpload from "./ImageUpload.js";
+import ImageUpload from "../utils/ImageUpload.js";
+import { createList } from "../api/index.js";
 
 const addItemStyles = makeStyles(theme => ({
   addNewItemFont: {
@@ -45,7 +46,22 @@ const addItemStyles = makeStyles(theme => ({
 
 function AddList(props) {
   const classes = addItemStyles();
-  const { open, onClose } = props;
+  const { open, onClose, reloadData, makeSnackBar } = props;
+  const [name, setName] = useState("");
+
+  function uploadList() {
+    const body = { name: name, items: [] };
+    createList(body).then(data => {
+      if (data.error) {
+        console.log(data.error);
+        makeSnackBar("There was an Error creating this list");
+      } else {
+        makeSnackBar("List created successfully");
+        reloadData();
+        onClose();
+      }
+    });
+  }
 
   return (
     <Dialog
@@ -83,6 +99,9 @@ function AddList(props) {
           }}
           inputProps={{ style: { textAlign: "center" } }}
           placeholder="Enter name"
+          onChange={e => {
+            setName(e.target.value);
+          }}
           style={{
             backgroundColor: "white",
             width: "75%",
@@ -99,7 +118,12 @@ function AddList(props) {
         </h3>
         <ImageUpload />
 
-        <Button size="large" variant="contained" className={classes.button}>
+        <Button
+          size="large"
+          variant="contained"
+          className={classes.button}
+          onClick={uploadList}
+        >
           Create List
         </Button>
       </DialogContent>

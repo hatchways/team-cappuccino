@@ -6,8 +6,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import { TextField, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import SelectField from "../utils/SelectListField";
-import { addItem } from "../api/index.js";
-import SnackBarMessage from "../utils/SnackBarMessage";
+import uploadItem from "./uploadItem.js";
 
 const addItemStyles = makeStyles(theme => ({
   addNewItemFont: {
@@ -39,24 +38,18 @@ const addItemStyles = makeStyles(theme => ({
 
 function AddItem(props) {
   const classes = addItemStyles();
-  // lists should be a list of {name: String, _id: String}
-  const { open, onClose } = props;
-  const [list, setList] = React.useState({ name: "", _id: "" });
+  const {
+    open,
+    onClose,
+    reloadData,
+    lists,
+    makeSnackBar,
+    startingValue
+  } = props;
+  const [list, setList] = useState({ name: "", _id: "" });
   const [inputURL, setInputUrl] = React.useState("");
-  const [snackBarState, setSnackBarState] = useState({
-    message: "",
-    open: false,
-    onClose: () => setSnackBarState({ ...snackBarState, open: false }),
-    timeShown: 3000
-  });
 
-  const lists = [
-    { name: "list1", _id: "0" },
-    { name: "list2", _id: "b" },
-    { name: "list3", _id: "5d5f3b3c1c9d440000b2fb76" }
-  ];
-  const listIdTemp = { _id: "5d5f3b3c1c9d440000b2fb76" };
-  const itemNameTemp = "temp name";
+  const itemNameTemp = "Some Name";
 
   function handleChangeList(selectedList) {
     setList(selectedList);
@@ -64,21 +57,8 @@ function AddItem(props) {
 
   function handleClick() {
     const body = { name: itemNameTemp, url: inputURL, list: list };
-    addItem(body).then(data => {
-      if (data.error) {
-        setSnackBarState({
-          ...snackBarState,
-          message: "Item upload failed",
-          open: true
-        });
-      } else {
-        setSnackBarState({
-          ...snackBarState,
-          message: "Item uploaded successfully",
-          open: true
-        });
-      }
-    });
+    uploadItem(body, makeSnackBar, reloadData);
+    onClose();
   }
 
   return (
@@ -140,7 +120,7 @@ function AddItem(props) {
           promptText="Select"
           onChangeHandler={handleChangeList}
           fillWidthOf="75%"
-          startingValue={{ name: "list3", _id: "5d5f3b3c1c9d440000b2fb76" }}
+          startingValue={startingValue}
         />
         <Button
           size="large"
@@ -150,7 +130,6 @@ function AddItem(props) {
         >
           Add Item
         </Button>
-        <SnackBarMessage state={snackBarState} />
       </DialogContent>
     </Dialog>
   );
