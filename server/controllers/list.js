@@ -1,50 +1,33 @@
 const List = require("../models/list");
 const User = require("../models/user");
+const updateObj = require('./subs-controller/edit-model');
 const upload = require("../services/image-upload");
 const singleUpload = upload.single("listimage");
-const formidable = require("formidable");
-const fs = require("fs");
-const _ = require("lodash")
 
 // lists by id
 exports.listById = (req, res, next, id) => {
   List.findById(id)
     .populate("user", "_id name")
     .exec((err, list) => {
-      if (err || post) return res.status(400).json({ error: err });
-    });
+      if (err || !list) return res.status(400).json({ error: err });
 
-  req.list = list;
-  next();
+      req.list = list;
+      next();
+    });
 };
 // create list
-exports.createList = (req, res, next) => {
-  let form = new formidable.IncomingForm();
-  form.keepExtensions = true;
-  form.parse(req, (err, fields, files) => {
-    if (err)
-      return res.status(400).json({ err: "Image could not be uploaded" });
-
-    // define new list
-    let list = new List(fields);
-
-    req.profile.hashed_password = undefined;
-    req.profile.salt = undefined;
-    list.user = req.profile;
-
-    if (files.photo) {
-      list.photo.data = fs.readFileSync(files.photo.path);
-      list.photo.contentType = files.photo.type;
-  }
-
-    list.save((err, result) => {
-      if (err) {
-        return res.status(400).json({ error: err });
-      }
-
-      res.json(result);
-    });
+exports.createList = async (req, res, next) => {
+  const list = new List({
+    ...body,
+    user: req.params.userId
   });
+
+  try {
+    await list.save();
+    res.status(201).send(list);
+  }catch(e) {
+    res.status(400).send({ error: e});
+  }
 };
 
 // get users lists
@@ -66,42 +49,33 @@ exports.getSingleList = async (req, res) => {
 
 // edit list
 exports.updateList = async (req, res) => {
-  let form = new formidable.IncomingForm();
-  form.keepExtensions = true;
-  form.parse(req, (err, fields, files) => {
-      if (err) {
-          return res.status(400).json({
-              error: "Photo could not be uploaded"
-          });
-      }
-      // save list
-      let list = req.list;
-      list = _.extend(list, fields);
+  try {
+    const _id = req.params.listId; // get list id
 
-      if (files.photo) {
-          list.photo.data = fs.readFileSync(files.photo.path);
-          list.photo.contentType = files.photo.type;
-      }
+    const list = await List.findOne({ _id, user: req.profile._id });
 
-      list.save((err, result) => {
-          if (err) {
-              return res.status(400).json({
-                  error: err
-              });
-          }
-          res.json(list);
-      });
-  });
+    // check list
+    if(!list) return res.status(400).send({ error: 'List is not found!'});
+
+    // updating list and save it 
+    updateObj(list, req.body, ["title"]);
+    list.save(); 
+
+    res.status(200).json(list);
+
+  }catch(e) {
+    res.status(400).json({ error: e });
+  }
 };
 
 // delete list
 exports.deleteList = (req, res) => {
-  let list = req.list;
-  list.remove((err, post) => {
-    if(err) return res.status(400).json({ error: err});
-    // return success message
-    res.json({ message: 'List is deleted successfully!'});
-  })
+  List.findById(req.params.listId).exec((err, list) => {
+    if(err) return res.status(400).json({ error: err });
+    // remove list
+    list.remove();
+    return res.status(200).json({ message: 'List is deleted!~' });
+  });
 };
 
 // uploading image for list

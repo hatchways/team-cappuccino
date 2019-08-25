@@ -31,27 +31,26 @@ exports.getAllUsers = async (req, res) => {
   }).select(" name email avatar joined");
 };
 
-// updating user
-exports.updateUser = async (req, res) => {
-  try {
-    // update user
-    updateObj(req.user, req.body, ["name", "email", "password"]);
+// updating usera
+exports.updateUser = (req, res) => {
+  User.findById(req.profile._id).select("-hashed_password -salt").exec(async (err, user) => {
+    if(err) return res.status(400).json({ error: err });
 
-    // save and return user
-    await req.user.save();
-    const { _id, name, email } = req.user;
-    res.status(201).json({ _id, name, email });
-  } catch (e) {
-    res.status(400).send({ error: e.message });
-  }
+    // update user and save 
+    updateObj(user, req.body, ["name", "email"]);
+    await user.save();
+    return res.status(200).json(user); // return user
+  });
 };
 
 // delete user
-exports.deleteUser = async (req, res) => {
-  await req.user.remove((err, user) => {
+exports.deleteUser = (req, res) => {
+  User.findById(req.profile._id).exec((err, user) => {
     if (err) return res.status(400).json({ error: err });
-    res.status(200).json({ message: "Account is deleted." });
-  });
+    // remove user 
+    user.remove();
+    res.status(200).json({ message: 'Your account has been deleted!' });
+  })
 };
 
 // upload user avatar
