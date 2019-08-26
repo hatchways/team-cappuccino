@@ -55,7 +55,6 @@ exports.deleteUser = (req, res) => {
 
 // upload user avatar
 exports.uploadAvatar = (req, res) => {
-  try {
     singleUpload(req, res, async function(err) {
       if (err)
         return res
@@ -64,11 +63,8 @@ exports.uploadAvatar = (req, res) => {
             errors: [{ title: "Image Upload Error", detail: err.message }]
           });
 
-      return res.json({ imageUrl: req.file.location });
+      return res.json({ 'imageUrl': req.file.location });
     });
-  } catch (e) {
-    res.status(400).send({ error: e.message });
-  }
 };
 
 // following/unfollowing

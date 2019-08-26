@@ -16,9 +16,9 @@ exports.listById = (req, res, next, id) => {
     });
 };
 // create list
-exports.createList = async (req, res, next) => {
+exports.createList = async (req, res) => {
   const list = new List({
-    ...body,
+    ...req.body,
     user: req.params.userId
   });
 

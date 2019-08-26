@@ -22,7 +22,7 @@ router.put('/lists/:listId', authMiddleWare, ListController.updateList);
 router.delete('/lists/:listId', authMiddleWare, ListController.deleteList);
 
 // @route POST /api/lists:id
-router.post('/lists/image', authMiddleWare, ListController.uploadListImage);
+router.post('/lists/uploadimage', authMiddleWare, ListController.uploadListImage);
 
 // @route param userId
 router.param("userId", UserController.userById);

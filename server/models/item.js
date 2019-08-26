@@ -4,13 +4,13 @@ const List = require('./list');
 const User = require('./user');
 
 
+
 const itemSchema = new Schema({
     name: {
         type: String,
-        required: true,
         trim: true
     },
-    price: [{
+    prices: [{
         date: {
             type: Date,
             default: Date.now

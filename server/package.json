@@ -30,6 +30,8 @@
     "multer-s3": "^2.9.0",
     "nodemon": "^1.19.1",
     "puppeteer": "^1.19.0",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4",
     "scrape-it": "^5.1.4",
     "uuid": "^3.3.3",
     "validator": "^11.1.0"

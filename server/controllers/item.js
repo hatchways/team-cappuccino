@@ -1,12 +1,12 @@
 const Item = require("../models/item");
 const List = require("../models/list");
 const User = require("../models/user");
+const scrapper = require("../utils/scrapper/price-scraping");
 const updateObj = require("./subs-controller/edit-model");
 
 // get item id
 exports.itemById = (req, res, next, id) => {
   Item.findById(id)
-    .populate("user", "_id name")
     .populate("list", "_id name")
     .exec((err, item) => {
       if (err || !item) return res.status(400).json({ error: err });
@@ -17,12 +17,16 @@ exports.itemById = (req, res, next, id) => {
 };
 
 // adding item
-exports.addItem = (req, res) => {
-  const { name, url, list } = req.body;
-  const item = new Item({
-    name,
-    url
-  });
+exports.addItem = async (req, res) => {
+  const { url } = req.body;
+  await scrapper.initialize(); // start amazon
+
+  let details = await scrapper.getProductDetails(url.toString());
+
+  // convert string to price
+  const itemPrice = parseFloat(details.price.replace("$", ""));
+  
+  const item = new Item({ url });
 
   try {
     List.findById(req.params.listId)
@@ -34,16 +38,20 @@ exports.addItem = (req, res) => {
             error: "Invalid data!"
           });
 
-        foundList.items.push(item) // add to items
+        foundList.items.push(item); // add to items
         // update item and user
         item.list = foundList;
         item.user = foundList.user;
+        item.name = details.title;
+        item.image = details.image;
+        item.prices.push({ price: itemPrice });
+        
 
         // save item
         await item.save();
         await foundList.save();
 
-        res.json(foundList);
+        res.json(item);
       });
   } catch (e) {
     res.status(400).send({ error: e.message });
@@ -52,8 +60,8 @@ exports.addItem = (req, res) => {
 
 // getAllItems
 exports.getAllItems = async (req, res) => {
-  Item.find({ list: req.params.listId}).exec((err, items) => {
-    if(err) return res.status(400).json({ error: err});
+  Item.find({ list: req.params.listId }).exec((err, items) => {
+    if (err) return res.status(400).json({ error: err });
 
     return res.status(200).json(items);
   });
@@ -62,30 +70,6 @@ exports.getAllItems = async (req, res) => {
 // get single item
 exports.getSingleItem = async (req, res) => {
   return res.json(req.item);
-};
-
-// Update item
-exports.updateItem = async (req, res) => {
-  try {
-    const _id = req.params.id;
-
-    const item = await Item.findOne({ _id, user: req.user._id });
-
-    // update list
-    updateObj(item, req.body, ["name", "url"]);
-
-    // save item
-    await item.save();
-
-    if (!item)
-      res.status(400).send({
-        error: "Item is not found!"
-      });
-    // return list
-    res.status(201).json({ message: "Item is updated" });
-  } catch (e) {
-    res.status(400).send({ error: e.message });
-  }
 };
 
 // Delete Item

@@ -6,13 +6,13 @@ const ListControllers = require('../controllers/list');
 
 
 // @route POST /items/:listId
-router.post('/items/:listId', authMiddleware, ItemControllers.addItem);
+router.post('/items/new/:listId', authMiddleware, ItemControllers.addItem);
+
+// @route GET /items/:itemId
+router.get('/items/:itemId', authMiddleware, ItemControllers.getSingleItem);
 
 // @route GET /items/:listId
-router.get('/items/:listId', authMiddleware, ItemControllers.getAllItems);
-
-// @route PATCH /items/:itemId
-router.put('/items/:itemId', authMiddleware, ItemControllers.updateItem);
+router.get('/list/:listId/items', authMiddleware, ItemControllers.getAllItems);
 
 // @route DELETE /items/:itemId
 router.delete('/items/:itemId', authMiddleware, ItemControllers.deleteItem);

@@ -13,10 +13,6 @@ const listSchema = new Schema({
         type: String,
         trim: true
     },
-    photo: {
-        data: Buffer,
-        contentType: String
-    },
     user: {
         type: Schema.Types.ObjectId,
         required: true,
