@@ -79,10 +79,6 @@ function Header(props) {
           spacing={2}
           alignItems="center"
           edge="start"
-          style={{ cursor: "pointer" }}
-          onClick={() => {
-            props.history.push("/profile");
-          }}
         >
           <Grid item>
             <img src={AppIcon} alt="logo" className={classes.logo} />
@@ -114,7 +110,14 @@ function Header(props) {
               <Button className={classes.label}>Notifications</Button>
             </StyledBadge>
             <AccountCircle className={classes.accountCircle} />
-            <Button className={classes.profile}>Profile</Button>
+            <Button
+              className={classes.profile}
+              onClick={() => {
+                props.history.push("/profile");
+              }}
+            >
+              Profile
+            </Button>
             <Button className={classes.profile} onClick={() => props.signout}>
               Sign Out
             </Button>

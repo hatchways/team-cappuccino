@@ -5,7 +5,7 @@ import { getLists } from "../components/api/index.js";
 import SnackBarMessage from "../components/utils/SnackBarMessage.js";
 import AddItemBar from "../components/items/addItemBar.js";
 
-function ProfilePage() {
+function Lists() {
   const [list, setList] = useState("");
   const [modalState, setModalState] = useState({
     addItem: false,
@@ -80,4 +80,4 @@ function ProfilePage() {
   );
 }
 
-export default withRouter(ProfilePage);
+export default withRouter(Lists);

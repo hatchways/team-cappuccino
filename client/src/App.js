@@ -5,7 +5,7 @@ import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import { isAuthenticated } from "./components/auth";
 import LoginPage from "./pages/Login";
 import SignUpPage from "./pages/Signup";
-import ProfilePage from "./components/user/profile";
+import ProfilePage from "./pages/Profile";
 import ListPage from "./pages/Lists";
 import Header from "./pages/Header";
 import FriendsPage from "./pages/Friends";
