@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getUser } from "../components/api";
 import { isAuthenticated, logout } from "../components/auth";
 import { Avatar, Button } from "@material-ui/core";
-import { withStyles, makeStyles } from "@material-ui/core/styles";
-import Spinner from "../components/utils/spinner.js";
+import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 const profileStyles = makeStyles(theme => ({
@@ -94,7 +93,7 @@ function Profile(props) {
         className={classes.signOutButton}
         size="large"
       >
-        Logout
+        Sign Out
       </Button>
     </div>
   );

@@ -125,10 +125,6 @@ function EditList(props) {
     makeSnackBar
   } = props;
 
-  // useEffect(() => {
-  //   // console.log("this is the new list in EditList", list);
-  // }, [list]);
-
   return (
     <Dialog
       open={open}
