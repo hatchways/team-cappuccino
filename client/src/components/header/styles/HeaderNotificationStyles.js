@@ -47,13 +47,7 @@ const headerNotificationStyles = makeStyles(theme => ({
     margin: "0px"
   },
   tileStyle: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
     width: "100%",
-    overflow: "hidden",
-    backgroundColor: "white",
     marginTop: "5px",
     marginBottom: "5px",
     borderRadius: "0px"
@@ -64,57 +58,6 @@ const headerNotificationStyles = makeStyles(theme => ({
     margin: "0px",
     position: "absolute",
     left: 0
-  },
-  contentContainer: {
-    height: "100%",
-    width: "100%",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-start"
-  },
-  imgContainerStyle: {
-    width: "10vh",
-    height: "100%",
-    overflow: "hidden"
-  },
-  imgStyle: {
-    width: "100%"
-  },
-  textBlock: {
-    height: "100%",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-start",
-    marginLeft: "20px"
-  },
-  itemNameFont: {
-    fontSize: "1em",
-    fontWeight: 700,
-    marginTop: "10px",
-    marginBottom: "0px"
-  },
-  linkFont: {
-    fontSize: ".6em",
-    color: "grey",
-    marginTop: "4px",
-    marginBottom: "0px"
-  },
-  prices: {
-    marginTop: "4px",
-    display: "inline-flex",
-    alignItems: "center"
-  },
-  oldPriceFont: {
-    fontSize: ".7em",
-    margin: "0px",
-    textDecoration: "line-through"
-  },
-  newPriceFont: {
-    fontSize: ".8em",
-    margin: "0px",
-    marginLeft: "2px",
-    color: theme.primary
   }
 }));
 

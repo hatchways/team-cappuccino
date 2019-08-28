@@ -3,22 +3,9 @@ import { getUser } from "../components/api";
 import { isAuthenticated, logout } from "../components/auth";
 import { Avatar, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import LoadingSpinner from "../components/utils/LoadingSpinner.js";
 
 const profileStyles = makeStyles(theme => ({
-  loadingContainer: {
-    width: "100vw",
-    height: "100vh",
-    zIndex: 25,
-    backgroundColor: "rgb(245, 245, 245, .7)",
-    position: "absolute",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  loadingProgress: {
-    color: theme.primary
-  },
   pageContainer: {
     width: "100%",
     height: "100vh",
@@ -76,12 +63,7 @@ function Profile(props) {
 
   return (
     <div className={classes.pageContainer}>
-      {state.loading && (
-        <div className={classes.loadingContainer}>
-          {" "}
-          <CircularProgress className={classes.loadingProgress} />{" "}
-        </div>
-      )}
+      {state.loading && <LoadingSpinner />}
       <h1 className={classes.pageStart}>Profile</h1>
       <Avatar className={classes.avatarStyle} />
       <h1 className={classes.userName}>{state.user.name}</h1>

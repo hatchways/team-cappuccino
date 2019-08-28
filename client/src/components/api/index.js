@@ -15,3 +15,8 @@ export const getLists = () => {
 export const createList = body => {
   return makeAuthCall(body, `api/lists`, "POST", false);
 };
+
+export const deleteItem = id => {
+  console.log(id);
+  return makeAuthCall({}, `api/items/${id}`, "DELETE", false);
+};
