@@ -1,120 +1,100 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
+import headerNotificationStyles from "./styles/HeaderNotificationStyles.js";
 import Popover from "@material-ui/core/Popover";
-import { makeStyles } from "@material-ui/core/styles";
+import IconButton from "@material-ui/core/IconButton";
 import shoppingPlaceHolder from "../../assets/shoppingPlaceHolder.png";
-
-const headerNotificationStyles = makeStyles(theme => ({
-  topBar: {
-    width: "100%",
-    height: "3px",
-    backgroundColor: "black",
-    display: "flex",
-    justifyContent: "center"
-  },
-  arrowUp: {
-    width: "0",
-    height: "0",
-    borderLeft: "4px solid transparent",
-    borderRight: "4px solid transparent",
-    borderBottom: "4px solid black",
-    position: "absolute",
-    top: "-4px"
-  },
-  notificationBody: {
-    display: "flex",
-    flexDirection: "column",
-    width: "25vw",
-    padding: "10px",
-    overflow: "hidden"
-  },
-  tileStyle: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "100%",
-    overflow: "hidden",
-    backgroundColor: "white",
-    marginTop: "5px",
-    marginBottom: "5px",
-    borderRadius: "0px"
-  },
-  notificationFont: {
-    fontSize: "1em",
-    fontWeight: 700,
-    margin: "0px"
-  },
-  contentContainer: {
-    height: "100%",
-    width: "100%",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-start"
-  },
-  imgContainerStyle: {
-    width: "10vh",
-    height: "100%",
-    overflow: "hidden"
-  },
-  imgStyle: {
-    width: "100%"
-  },
-  textBlock: {
-    height: "100%",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-start",
-    marginLeft: "20px"
-  },
-  itemNameFont: {
-    fontSize: "1em",
-    fontWeight: 700,
-    marginTop: "10px",
-    marginBottom: "0px"
-  },
-  linkFont: {
-    fontSize: ".6em",
-    color: "grey",
-    marginTop: "4px",
-    marginBottom: "0px"
-  },
-  prices: {
-    marginTop: "4px",
-    display: "inline-flex",
-    alignItems: "center"
-  },
-  oldPriceFont: {
-    fontSize: ".7em",
-    margin: "0px",
-    textDecoration: "line-through"
-  },
-  newPriceFont: {
-    fontSize: ".8em",
-    margin: "0px",
-    marginLeft: "2px",
-    color: theme.primary
-  }
-}));
+import ArrowRight from "@material-ui/icons/KeyboardArrowRight";
+import ArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
+import Close from "@material-ui/icons/Close";
 
 function HeaderNotification(props) {
   const classes = headerNotificationStyles();
-  const { anchorEl, handleClose, elements } = props;
+  const { anchorEl, handleClose } = props;
+  let { elements } = props;
+  const [position, setPosition] = useState(0);
+  const [positionChanged, setPositionChanged] = useState(false);
 
   const open = Boolean(anchorEl);
 
-  function DisplayItem(props) {
-    const { element } = props;
+  useEffect(() => {
+    if (elements.length === 0) {
+      handleClose();
+    }
+  }, [elements.length, handleClose, position]);
 
+  function changePosition(dir) {
+    if (dir === "+") {
+      if (position === elements.length - 1) {
+        setPosition(0);
+      } else {
+        setPosition(position + 1);
+      }
+    }
+    if (dir === "-") {
+      if (position === 0) {
+        setPosition(elements.length - 1);
+      } else {
+        setPosition(position - 1);
+      }
+    }
+    if (dir === "0") {
+      if (position > elements.length - 1) {
+        setPosition(position - 1);
+      } else {
+        setPositionChanged(!positionChanged);
+      }
+    }
+  }
+
+  function NotificationHeader() {
     return (
-      <div className={classes.notificationBody}>
+      <div className={classes.headerDiv}>
         <h3
           className={classes.notificationFont}
           style={{ padding: `calc(10vh * .1)` }}
         >
           New Price!
         </h3>
+        <span className={classes.cardCountContainer}>
+          <IconButton
+            style={{ padding: "0px" }}
+            onClick={() => changePosition("-")}
+          >
+            <ArrowLeft />
+          </IconButton>
+          <h3
+            className={classes.cardCountFont}
+            style={{ padding: `calc(10vh * .1) 5px calc(10vh * .1) 5px` }}
+          >
+            {position + 1} / {elements.length}
+          </h3>
+          <IconButton
+            style={{ padding: "0px" }}
+            onClick={() => changePosition("+")}
+          >
+            <ArrowRight />
+          </IconButton>
+        </span>
+        <IconButton
+          style={{ padding: "0px", position: "absolute", right: 0 }}
+          onClick={() => {
+            elements.splice(position, 1);
+            changePosition("0");
+          }}
+        >
+          <Close />
+        </IconButton>
+      </div>
+    );
+  }
+
+  function DisplayItem(props) {
+    const { element } = props;
+
+    return (
+      <div className={classes.notificationBody}>
+        <NotificationHeader />
         <div
           key={element}
           className={classes.tileStyle}
@@ -156,7 +136,7 @@ function HeaderNotification(props) {
       <div className={classes.topBar}>
         <div className={classes.arrowUp}></div>
       </div>
-      <DisplayItem element="a" />
+      <DisplayItem element={elements[position]} />
     </Popover>
   );
 }
