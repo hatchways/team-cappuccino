@@ -1,5 +1,7 @@
 import React from "react";
 import { isAuthenticated } from "../../auth";
+import Dropzone from 'react-dropzone';
+import axios from 'axios';
 import { Redirect } from "react-router-dom";
 import { createList } from "../../api";
 import Add from "@material-ui/icons/Add";
@@ -63,6 +65,7 @@ class CreateList extends React.Component {
   state = {
     title: "",
     image: "",
+    selectedFile: null,
     error: "",
     user: {},
     loading: false,
@@ -76,14 +79,7 @@ class CreateList extends React.Component {
   }
 
   isValid = () => {
-    const { title, fileSize } = this.state;
-    if (fileSize > 100000) {
-      this.setState({
-        error: "File size should be less than 100kb",
-        loading: false
-      });
-      return false;
-    }
+    const { title } = this.state;
     if (title.length === 0) {
       this.setState({ error: "All fields are required", loading: false });
       return false;
@@ -93,11 +89,7 @@ class CreateList extends React.Component {
 
   handleChange = name => event => {
     this.setState({ error: "" });
-    const value = name === "photo" ? event.target.files[0] : event.target.value;
-
-    const fileSize = name === "photo" ? event.target.files[0].size : 0;
-    this.listData.set(name, value);
-    this.setState({ [name]: value, fileSize });
+    this.setState({ [name]: event.target.value });
   };
 
   handleSubmit = event => {
@@ -132,7 +124,7 @@ class CreateList extends React.Component {
   };
 
   render() {
-    const { title, error, loading, open, redirectToProfile } = this.state;
+    const { title, error, loading, open, redirectToProfile, image } = this.state;
     const { classes } = this.props;
 
     if(redirectToProfile) {
@@ -192,11 +184,9 @@ class CreateList extends React.Component {
             >
               Add a cover
             </h3>
-            <input
-              onChange={this.handleChange("photo")}
-              type="file"
-              accept="image/*"
-            />
+            <Dropzone onDrop={this.onDrop} multiple={false} className={classes.dropzoneBox}>
+            
+            </Dropzone>
             <Button
               size="large"
               variant="contained"

@@ -1,7 +1,11 @@
 import React from 'react';
 import { getUser } from '../api';
+<<<<<<< HEAD
 import { isAuthenticated } from '../auth';
 import { withStyles } from "@material-ui/core/styles";
+=======
+import { isAuthenticated, logout } from '../auth';
+>>>>>>> 6f5c78ec63c2b6eb3b923dad286ebf794c26e251
 
 
 const ProfileContainer = theme => ({
@@ -34,6 +38,7 @@ class Profile extends React.Component {
             <div>
                 <h1>Profile Page</h1>
                 <h1>Name: {user.name}</h1>
+                <button onClick={() => {logout(); this.props.history.push('/')}}>Logout</button>
             </div>
         )
     }

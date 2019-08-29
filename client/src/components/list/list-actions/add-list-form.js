@@ -2,8 +2,6 @@ import React from 'react';
 import Dialog from "@material-ui/core/Dialog";
 
 
-
-
 const AddListForm = props => {
     const { onClose, selectedValue, open } = props;
 

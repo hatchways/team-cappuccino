@@ -107,6 +107,7 @@ class Login extends React.Component {
           <TextField
             id="Email"
             label="Email"
+            type="email"
             variant="outlined"
             onChange={this.handleChange("email")}
             value={email}
@@ -115,6 +116,7 @@ class Login extends React.Component {
           <TextField
             id="Password"
             label="Password"
+            type="password"
             variant="outlined"
             autoComplete="current-password"
             onChange={this.handleChange("password")}

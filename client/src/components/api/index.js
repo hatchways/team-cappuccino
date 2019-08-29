@@ -34,8 +34,8 @@ export const getLists = (userId, token) => {
   return fetch(`/api/lists/by/${userId}`, {
     method: "GET",
     headers: {
-                  Accept: "application/json",
-            "Content-Type": "application/json",
+      Accept: "application/json",
+      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`
     }
   })
@@ -81,3 +81,4 @@ export const deleteList = (listId, token) => {
     .then(response => response.json())
     .catch(err => console.log(err));
 };
+

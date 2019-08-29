@@ -123,6 +123,8 @@ exports.testingPrice = (req, res) => {
   });
 };
 
+
+// setting up cron job to schedule scarpping every 23 hours
 cron.schedule("* * 23 * * *", () => {
   // 1. Find all item to track
   Item.find({}).exec(async (err, items) => {
@@ -148,7 +150,7 @@ cron.schedule("* * 23 * * *", () => {
       // see if new price is less than old price
       if(newPrice < oldPrice) {
         // send out email to notify user about price change;
-        
+
       }
     });
   });
