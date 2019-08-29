@@ -6,6 +6,8 @@ import { Button, GridList } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import listImage from "../../assets/shoppingPlaceHolder.png";
 import AddItem from "../items/AddItem.js";
+import ItemCard from "../items/ItemCard.js";
+import { deleteItem } from "../api/index.js";
 
 const editListStyles = makeStyles(theme => ({
   titleFont: {
@@ -35,72 +37,10 @@ const editListStyles = makeStyles(theme => ({
     width: "90%"
   },
   tileStyle: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
     width: "100%",
-    overflow: "hidden",
-    backgroundColor: "white",
     marginTop: "15px",
     marginBottom: "5px",
     borderRadius: "10px"
-  },
-  contentContainer: {
-    height: "100%",
-    width: "100%",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-start"
-  },
-  imgContainerStyle: {
-    width: "10vh",
-    height: "100%",
-    overflow: "hidden"
-  },
-  imgStyle: {
-    width: "100%"
-  },
-  textBlock: {
-    height: "100%",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-start",
-    marginLeft: "20px"
-  },
-  itemNameFont: {
-    fontSize: "1em",
-    fontWeight: 700,
-    marginTop: "10px",
-    marginBottom: "0px"
-  },
-  linkFont: {
-    fontSize: ".6em",
-    color: "grey",
-    marginTop: "4px",
-    marginBottom: "0px"
-  },
-  prices: {
-    marginTop: "4px",
-    display: "inline-flex",
-    alignItems: "center"
-  },
-  oldPriceFont: {
-    fontSize: ".7em",
-    margin: "0px",
-    textDecoration: "line-through"
-  },
-  newPriceFont: {
-    fontSize: ".8em",
-    margin: "0px",
-    marginLeft: "2px",
-    color: theme.primary
-  },
-  removeButton: {
-    borderRadius: "20px",
-    marginRight: "20px",
-    fontSize: ".6em"
   },
   addNewItemButton: {
     borderRadius: "20px",
@@ -125,6 +65,13 @@ function EditList(props) {
     makeSnackBar
   } = props;
 
+  console.log(list);
+
+  function deleteAItem(id) {
+    deleteItem(id);
+    reloadData();
+  }
+
   return (
     <Dialog
       open={open}
@@ -136,36 +83,22 @@ function EditList(props) {
       <div className={classes.gridListContainer}>
         <GridList cols={1} className={classes.gridListStyles}>
           {list.items.map(item => (
-            <div
-              key={item}
-              className={classes.tileStyle}
-              style={{ height: "10vh", padding: `calc(10vh * .1)` }}
-            >
-              <div className={classes.contentContainer}>
-                <div className={classes.imgContainerStyle}>
-                  <img
-                    src={listImage}
-                    alt="item"
-                    className={classes.imgStyle}
-                  />
-                </div>
-                <div className={classes.textBlock}>
-                  <h3 className={classes.itemNameFont}>Some Name</h3>
-                  <h4 className={classes.linkFont}>{item}</h4>
-                  <div className={classes.prices}>
-                    <h5 className={classes.oldPriceFont}>$60</h5>
-                    <p className={classes.newPriceFont}>$50</p>
-                  </div>
-                </div>
-              </div>
-              <Button
-                variant="outlined"
-                size="large"
-                className={classes.removeButton}
-              >
-                Remove
-              </Button>
-            </div>
+            <ItemCard
+              hasButton={true}
+              buttonOnClick={() => {
+                console.log(item);
+                // deleteAItem(item);
+              }}
+              hasNewPrice={true}
+              tileStyle={classes.tileStyle}
+              item={{
+                name: "Some Name",
+                image: listImage,
+                link: "www.somelink.com",
+                oldPrice: "$90",
+                newPrice: "$60"
+              }}
+            />
           ))}
         </GridList>
         <Button

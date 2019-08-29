@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 export const getUser = (userId, token) => {
   return fetch(`/api/user/${userId}`, {
     method: "GET",
@@ -83,7 +83,6 @@ export const deleteList = (listId, token) => {
     .catch(err => console.log(err));
 };
 
-=======
 import makeAuthCall from "./makeAuthCall.js";
 
 export const getUser = token => {
@@ -101,4 +100,8 @@ export const getLists = () => {
 export const createList = body => {
   return makeAuthCall(body, `api/lists`, "POST", false);
 };
->>>>>>> bf4512d27fa80e4acf6c10ff1f56e784a74ad1f6
+
+export const deleteItem = id => {
+  console.log(id);
+  return makeAuthCall({}, `api/items/${id}`, "DELETE", false);
+};

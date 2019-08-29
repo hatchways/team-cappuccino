@@ -8,7 +8,7 @@ const makeAuthCall = (body, url, method, isForm) => {
     }
   };
   const exportBody =
-    method === "GET"
+    method === "GET" || method === "DELETE"
       ? {}
       : !isForm
       ? { body: JSON.stringify(body) }
