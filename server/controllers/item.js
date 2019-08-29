@@ -2,7 +2,7 @@ const Item = require("../models/item");
 const List = require("../models/list");
 const User = require("../models/user");
 const scrapper = require("../utils/scrapper/price-scraping");
-const updateObj = require("./subs-controller/edit-model");
+const cron = require("node-cron");
 
 // get item id
 exports.itemById = (req, res, next, id) => {
@@ -19,16 +19,15 @@ exports.itemById = (req, res, next, id) => {
 // adding item
 exports.addItem = async (req, res) => {
   const { url } = req.body;
-  await scrapper.initialize(); // start amazon
-
-  let details = await scrapper.getProductDetails(url.toString());
-
-  // convert string to price
-  const itemPrice = parseFloat(details.price.replace("$", ""));
-  
-  const item = new Item({ url });
 
   try {
+    // start scrapping
+    await scrapper.initialize();
+    let details = await scrapper.getProductDetails(url);
+    // convert string to price
+    const itemPrice = parseFloat(details.price.replace("$", ""));
+
+    const item = new Item({ url: url });
     List.findById(req.params.listId)
       .populate("items")
       .populate("user")
@@ -45,15 +44,17 @@ exports.addItem = async (req, res) => {
         item.name = details.title;
         item.image = details.image;
         item.prices.push({ price: itemPrice });
-        
 
         // save item
         await item.save();
         await foundList.save();
+        const { _id, name, prices, image, url } = item;
+        await scrapper.end(); // quit browser
 
-        res.json(item);
+        res.status(200).json({ _id, name, url, prices, image });
       });
   } catch (e) {
+    await scrapper.end(); // quit browser
     res.status(400).send({ error: e.message });
   }
 };
@@ -98,3 +99,57 @@ exports.deleteItem = async (req, res) => {
     res.status(400).send({ error: e.message });
   }
 };
+
+// delete all items
+exports.deleteAllItems = (req, res) => {
+  try {
+    Item.remove({ list: req.params.listId });
+    res.status(200).json({ message: "All items are deleted" });
+  } catch (e) {
+    res.status(400).json({ error: e });
+  }
+};
+
+// setting cron-job to for scrapping automation
+exports.testingPrice = (req, res) => {
+  Item.find({}).exec((err, items) => {
+    if (err) res.status(400).json({ error: err });
+
+    items.forEach(item => {
+      console.log(item.url);
+    });
+
+    res.status(200).json({ message: "Look at console log" });
+  });
+};
+
+cron.schedule("* * 23 * * *", () => {
+  // 1. Find all item to track
+  Item.find({}).exec(async (err, items) => {
+    if (err) console.log(err); // print error
+
+    // loop to find item prices
+    items.forEach(async item => {
+      // 2. Scrap the price with each item's url
+      await scrapper.initialize();
+      let details = await scrapper.getProductDetails(item.url);
+      // convert string to price
+      const newItemPrice = parseFloat(details.price.replace("$", ""));
+      // add new price into our current prices
+      item.prices.push({ price: newItemPrice });
+      // stop scrapper after pushing newItemPrice
+      scrapper.end();
+
+      // compare our new price with our previous price
+      const pricesLength = item.prices.length;
+      const newPrice = item.prices[pricesLength - 1]; 
+      const oldPrice = item.prices[pricesLength - 2];
+
+      // see if new price is less than old price
+      if(newPrice < oldPrice) {
+        // send out email to notify user about price change;
+        
+      }
+    });
+  });
+});

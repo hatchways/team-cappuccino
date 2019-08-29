@@ -11,12 +11,12 @@ const scraper = {
     console.log("Starting the scraper...");
 
     browser = await puppeteer.launch({
-      headless: false
+      headless: true
     });
     page = await browser.newPage();
     await page.on('console', message => {
       console.log(`This is the message from the browser: ${message.text()}`)
-    })
+    });
 
     await page.goto(BASE_URL, ({ waitUntil: 'networkidle2'})); // wait for page to laod completely
   },
@@ -29,7 +29,7 @@ const scraper = {
     let details = await page.evaluate(() => {
 
       let title = document.querySelector('#productTitle').innerText;
-      let price = document.querySelector('#priceblock_ourprice, #priceblock_dealprice').innerText;
+      let price = document.querySelector('#priceblock_ourprice, #priceblock_dealprice, #a-size-medium').innerText;
       let image = document.querySelector(".a-dynamic-image").src
 
       return { title, price, image };

@@ -87,7 +87,7 @@ exports.uploadListImage = async (req, res) => {
           errors: [{ title: "Image Upload Error", detail: err.message }]
         });
 
-      return res.json({ listImageUrl: req.file.location });
+      return res.json({ 'listImageUrl': req.file.location });
     });
   } catch (e) {
     res.status(400).send({ error: e.message });

@@ -17,6 +17,12 @@ router.get('/list/:listId/items', authMiddleware, ItemControllers.getAllItems);
 // @route DELETE /items/:itemId
 router.delete('/items/:itemId', authMiddleware, ItemControllers.deleteItem);
 
+// @route DELETE all items 
+router.delete('/:listId/items', authMiddleware, ItemControllers.deleteAllItems);
+
+// @route GET /items/test
+router.get('/items', ItemControllers.testingPrice);
+
 // @route params listId
 router.param("listId", ListControllers.listById);
 
