@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 export const getUser = (userId, token) => {
   return fetch(`/api/user/${userId}`, {
     method: "GET",
@@ -82,3 +83,22 @@ export const deleteList = (listId, token) => {
     .catch(err => console.log(err));
 };
 
+=======
+import makeAuthCall from "./makeAuthCall.js";
+
+export const getUser = token => {
+  return makeAuthCall({}, `/api/user`, "GET", false);
+};
+
+export const addItem = body => {
+  return makeAuthCall(body, `api/items`, "POST", false);
+};
+
+export const getLists = () => {
+  return makeAuthCall({}, `api/lists`, "GET", false);
+};
+
+export const createList = body => {
+  return makeAuthCall(body, `api/lists`, "POST", false);
+};
+>>>>>>> bf4512d27fa80e4acf6c10ff1f56e784a74ad1f6

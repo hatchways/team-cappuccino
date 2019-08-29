@@ -1,4 +1,5 @@
 import React from "react";
+<<<<<<< HEAD
 import { isAuthenticated } from "../components/auth";
 import { AppBar, Button, Toolbar, Grid, Badge } from "@material-ui/core";
 import { withRouter } from "react-router";
@@ -7,11 +8,19 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import AppIcon from "../assets/logo.png";
 import HeaderDropDown from "../components/header/header-dropdown";
+=======
+import { AppBar, Toolbar, Grid } from "@material-ui/core";
+import { withRouter } from "react-router";
+import { makeStyles } from "@material-ui/core/styles";
+import AppIcon from "../assets/logo.png";
+import HeaderRightBar from "../components/header/HeaderRightBar";
+>>>>>>> bf4512d27fa80e4acf6c10ff1f56e784a74ad1f6
 
 const headerStyles = makeStyles(theme => ({
   topBar: {
     boxShadow: "none"
   },
+<<<<<<< HEAD
   grow: {
     display: "flex",
     justifyContent: "flex-end",
@@ -28,6 +37,8 @@ const headerStyles = makeStyles(theme => ({
     color: "black",
     whiteSpace: "nowrap"
   },
+=======
+>>>>>>> bf4512d27fa80e4acf6c10ff1f56e784a74ad1f6
   logo: {
     width: "30px"
   },
@@ -40,6 +51,7 @@ const headerStyles = makeStyles(theme => ({
     fontWeight: 250,
     letterSpacing: "0.5em",
     color: "black"
+<<<<<<< HEAD
   },
   badgeColor: {
     color: theme.primary
@@ -69,7 +81,17 @@ const StyledBadge = withStyles(theme => ({
 }))(Badge);
 
 const Header = props => {
+=======
+  }
+}));
+
+function Header(props) {
+>>>>>>> bf4512d27fa80e4acf6c10ff1f56e784a74ad1f6
   const classes = headerStyles();
+
+  function changeLocation(loc) {
+    props.history.push(loc);
+  }
 
   return (
     <AppBar className={classes.topBar}>
@@ -80,10 +102,6 @@ const Header = props => {
           spacing={2}
           alignItems="center"
           edge="start"
-          style={{ cursor: "pointer" }}
-          onClick={() => {
-            props.history.push("/profile");
-          }}
         >
           <Grid item>
             <img src={AppIcon} alt="logo" className={classes.logo} />
@@ -93,6 +111,7 @@ const Header = props => {
           </Grid>
         </Grid>
 
+<<<<<<< HEAD
         {isAuthenticated() ? (
           <div className={classes.grow}>
             <AccountCircle className={classes.accountCircle} />
@@ -116,6 +135,12 @@ const Header = props => {
             </Button>
           </div>
         ) : null}
+=======
+        {location.pathname !== "/register" &&
+          location.pathname !== "/login" && (
+            <HeaderRightBar changeLocation={changeLocation} />
+          )}
+>>>>>>> bf4512d27fa80e4acf6c10ff1f56e784a74ad1f6
       </Toolbar>
     </AppBar>
   );

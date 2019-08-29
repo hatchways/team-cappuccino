@@ -53,6 +53,10 @@ class Login extends React.Component {
     loading: false
   };
 
+  componentDidMount() {
+    document.body.style.backgroundColor = "white";
+  }
+
   handleChange = name => event => {
     this.setState({ error: "" });
     this.setState({ [name]: event.target.value });
@@ -84,7 +88,7 @@ class Login extends React.Component {
     const { classes } = this.props;
 
     if (redirectToReferer) {
-      return <Redirect to="/profile" />;
+      return <Redirect to="/lists" />;
     }
 
     return (

@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { Button, GridList } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import listImage from "../assets/shoppingPlaceHolder.png";
+import listImage from "../../assets/shoppingPlaceHolder.png";
+import AddItem from "../items/AddItem.js";
 
 const editListStyles = makeStyles(theme => ({
   titleFont: {
@@ -113,21 +114,28 @@ const editListStyles = makeStyles(theme => ({
 }));
 
 function EditList(props) {
-  const { open, handleModalState } = props;
-  const list = ["a", "b", "c", "d", "f", "g"];
   const classes = editListStyles();
+  const [addItemState, setAddItemState] = useState(false);
+  const {
+    open,
+    handleModalState,
+    lists,
+    list,
+    reloadData,
+    makeSnackBar
+  } = props;
 
   return (
     <Dialog
       open={open}
       onClose={handleModalState("editList")}
-      PaperProps={{ style: { background: "WhiteSmoke" } }}
+      PaperProps={{ style: { background: "WhiteSmoke", width: "50vw" } }}
     >
-      <DialogTitle className={classes.titleFont}>Clothes</DialogTitle>
-      <h1 className={classes.itemCountFont}>x items</h1>
+      <DialogTitle className={classes.titleFont}>{list.name}</DialogTitle>
+      <h1 className={classes.itemCountFont}>{list.__v} items</h1>
       <div className={classes.gridListContainer}>
         <GridList cols={1} className={classes.gridListStyles}>
-          {list.map(item => (
+          {list.items.map(item => (
             <div
               key={item}
               className={classes.tileStyle}
@@ -143,9 +151,7 @@ function EditList(props) {
                 </div>
                 <div className={classes.textBlock}>
                   <h3 className={classes.itemNameFont}>Some Name</h3>
-                  <h4 className={classes.linkFont}>
-                    Some link goes right here
-                  </h4>
+                  <h4 className={classes.linkFont}>{item}</h4>
                   <div className={classes.prices}>
                     <h5 className={classes.oldPriceFont}>$60</h5>
                     <p className={classes.newPriceFont}>$50</p>
@@ -165,14 +171,25 @@ function EditList(props) {
         <Button
           size="large"
           className={classes.addNewItemButton}
-          onClick={prevState => {
-            handleModalState("editList")(prevState);
-            handleModalState("addItem")(prevState);
+          onClick={() => {
+            // handleModalState("editList")();
+            // handleModalState("addItem")();
+            setAddItemState(true);
           }}
         >
           Add New Item
         </Button>
       </div>
+      <AddItem
+        open={addItemState}
+        onClose={() => {
+          setAddItemState(false);
+        }}
+        reloadData={reloadData}
+        lists={lists}
+        makeSnackBar={makeSnackBar}
+        startingValue={list}
+      />
     </Dialog>
   );
 }
