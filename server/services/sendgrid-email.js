@@ -15,17 +15,18 @@ const sendSignUpConfirmation = (to, name) => {
   sgMail.send(msgContents);
 };
 
-const sendScrapping = (email, item, price) => {
+const sendPriceDrop = (email, name, itemName) => {
   const msgContents = {
     to: email,
     from: "test@test.com",
     templateId: "d-1b13f858b1d545a29894dc00b83af967",
     dynamic_template_data: {
-      item: item,
-      price: price
+      email,
+      name,
+      itemName  
     }
   };
   sgMail.send(msgContents);
 }
 
-module.exports = { sendSignUpConfirmation, sendScrapping };
+module.exports = { sendSignUpConfirmation, sendPriceDrop };

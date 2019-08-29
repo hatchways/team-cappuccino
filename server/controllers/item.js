@@ -1,8 +1,9 @@
 const Item = require("../models/item");
 const List = require("../models/list");
 const User = require("../models/user");
-const scrapper = require("../utils/scrapper/price-scraping");
-const cron = require("node-cron");
+const { itemScrapping, priceScrapping } = require("../utils/scrapper/scrapping");
+const CronJob = require("cron").CronJob;
+const { sendPriceDrop } = require('../services/sendgrid-email');
 
 // get item id
 exports.itemById = (req, res, next, id) => {
@@ -22,8 +23,8 @@ exports.addItem = async (req, res) => {
 
   try {
     // start scrapping
-    await scrapper.initialize();
-    let details = await scrapper.getProductDetails(url);
+    await itemScrapping.initialize();
+    let details = await itemScrapping.getProductDetails(url);
     // convert string to price
     const itemPrice = parseFloat(details.price.replace("$", ""));
 
@@ -49,12 +50,12 @@ exports.addItem = async (req, res) => {
         await item.save();
         await foundList.save();
         const { _id, name, prices, image, url } = item;
-        await scrapper.end(); // quit browser
+        await itemScrapping.end(); // quit browser
 
         res.status(200).json({ _id, name, url, prices, image });
       });
   } catch (e) {
-    await scrapper.end(); // quit browser
+    await itemScrapping.end(); // quit browser
     res.status(400).send({ error: e.message });
   }
 };
@@ -116,42 +117,51 @@ exports.testingPrice = (req, res) => {
     if (err) res.status(400).json({ error: err });
 
     items.forEach(item => {
-      console.log(item.url);
+      console.log(item.prices);
     });
 
     res.status(200).json({ message: "Look at console log" });
   });
 };
 
-
 // setting up cron job to schedule scarpping every 23 hours
-cron.schedule("* * 23 * * *", () => {
-  // 1. Find all item to track
-  Item.find({}).exec(async (err, items) => {
-    if (err) console.log(err); // print error
+new CronJob(
+  "* * 23 * * *",
+  async function() {
+    // 1. Find all item to track
+    Item.find({}).populate("user", "name email").exec(async (err, items) => {
+      if (err) console.log(err); // print error
 
-    // loop to find item prices
-    items.forEach(async item => {
-      // 2. Scrap the price with each item's url
-      await scrapper.initialize();
-      let details = await scrapper.getProductDetails(item.url);
-      // convert string to price
-      const newItemPrice = parseFloat(details.price.replace("$", ""));
-      // add new price into our current prices
-      item.prices.push({ price: newItemPrice });
-      // stop scrapper after pushing newItemPrice
-      scrapper.end();
+      // loop to find item prices
+      await Promise.all(items.map(async (item) => {
+        // 2. Scrap the price with each item's url
+        await priceScrapping.initialize();
+        let scrappedInfo = await priceScrapping.getProductPrice(item.url);
+        // convert string to price
+        const newItemPrice = await parseFloat(scrappedInfo.price.replace("$", ""));
+        // add new price into our current prices
+        item.prices.push({ price: newItemPrice });
+        await item.save(); // save item
 
-      // compare our new price with our previous price
-      const pricesLength = item.prices.length;
-      const newPrice = item.prices[pricesLength - 1]; 
-      const oldPrice = item.prices[pricesLength - 2];
 
-      // see if new price is less than old price
-      if(newPrice < oldPrice) {
-        // send out email to notify user about price change;
+        // compare our new price with our previous price
+        const pricesLength = item.prices.length;
+        const newPrice = item.prices[pricesLength - 1].price;
+        const oldPrice = item.prices[pricesLength - 2].price;
+        console.log(newPrice, oldPrice);
 
-      }
+        // see if new price is less than old price
+        if(newPrice < oldPrice) {
+          // send out email to notify user about price change;
+          sendPriceDrop(item.user.email, item.user.name, item.name);
+          await priceScrapping.end(); // after 3 seconds browser close
+        } else {
+          await priceScrapping.end();
+        }
+      }));
     });
-  });
-});
+  },
+  null,
+  true,
+  "America/Los_Angeles"
+);
