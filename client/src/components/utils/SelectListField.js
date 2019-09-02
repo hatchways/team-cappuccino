@@ -9,8 +9,6 @@ function SelectListField(props) {
 
   if (startingValue === undefined) {
     startingValue = { name: "", _id: "" };
-  } else {
-    onChangeHandler(startingValue);
   }
 
   if (fontSize === undefined) {

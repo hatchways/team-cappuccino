@@ -7,6 +7,7 @@ import shoppingPlaceHolder from "../../assets/shoppingPlaceHolder.png";
 import ArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import ArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import Close from "@material-ui/icons/Close";
+import ItemCard from "../items/ItemCard.js";
 
 function HeaderNotification(props) {
   const classes = headerNotificationStyles();
@@ -95,29 +96,18 @@ function HeaderNotification(props) {
     return (
       <div className={classes.notificationBody}>
         <NotificationHeader />
-        <div
-          key={element}
-          className={classes.tileStyle}
-          style={{ height: "10vh", padding: `calc(10vh * .1)` }}
-        >
-          <div className={classes.contentContainer}>
-            <div className={classes.imgContainerStyle}>
-              <img
-                src={shoppingPlaceHolder}
-                alt="item"
-                className={classes.imgStyle}
-              />
-            </div>
-            <div className={classes.textBlock}>
-              <h3 className={classes.itemNameFont}>Some Name</h3>
-              <h4 className={classes.linkFont}>{element}</h4>
-              <div className={classes.prices}>
-                <h5 className={classes.oldPriceFont}>$60</h5>
-                <p className={classes.newPriceFont}>$50</p>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ItemCard
+          hasButton={false}
+          hasNewPrice={true}
+          tileStyle={classes.tileStyle}
+          item={{
+            name: "Some Name",
+            image: shoppingPlaceHolder,
+            link: "www.somelink.com",
+            oldPrice: "$90",
+            newPrice: "$60"
+          }}
+        />
       </div>
     );
   }

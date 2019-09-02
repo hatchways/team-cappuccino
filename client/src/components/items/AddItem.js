@@ -6,7 +6,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import { TextField, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import SelectField from "../utils/SelectListField";
-import uploadItem from "./uploadItem.js";
+import UploadItem from "./uploadItem.js";
 
 const addItemStyles = makeStyles(theme => ({
   addNewItemFont: {
@@ -46,18 +46,31 @@ function AddItem(props) {
     makeSnackBar,
     startingValue
   } = props;
-  const [list, setList] = useState({ name: "", _id: "" });
-  const [inputURL, setInputUrl] = React.useState("");
+  const [state, setState] = useState({
+    list: startingValue,
+    inputURL: "",
+    body: {},
+    uploading: false
+  });
 
   const itemNameTemp = "Some Name";
 
   function handleChangeList(selectedList) {
-    setList(selectedList);
+    setState({ ...state, list: selectedList });
+  }
+
+  function handleChangeUrl(newURL) {
+    setState({ ...state, inputURL: newURL });
   }
 
   function handleClick() {
-    const body = { name: itemNameTemp, url: inputURL, list: list };
-    uploadItem(body, makeSnackBar, reloadData);
+    setState({
+      uploading: true,
+      body: { name: itemNameTemp, url: state.inputURL, list: state.list }
+    });
+  }
+  function handleUploadClose() {
+    setState({ ...state, uploading: false });
     onClose();
   }
 
@@ -75,6 +88,13 @@ function AddItem(props) {
         }
       }}
     >
+      <UploadItem
+        open={state.uploading}
+        body={state.body}
+        makeSnackBar={makeSnackBar}
+        reloadData={reloadData}
+        onClose={handleUploadClose}
+      />
       <DialogTitle>
         <p className={classes.addNewItemFont}>Add New Item</p>
       </DialogTitle>
@@ -91,9 +111,9 @@ function AddItem(props) {
           Paste link to item
         </h3>
         <TextField
-          value={inputURL}
+          value={state.inputURL}
           onChange={e => {
-            setInputUrl(e.target.value);
+            handleChangeUrl(e.target.value);
           }}
           InputProps={{
             disableUnderline: true,
