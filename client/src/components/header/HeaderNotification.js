@@ -91,7 +91,6 @@ function HeaderNotification(props) {
   }
 
   function DisplayItem(props) {
-    const { element } = props;
 
     return (
       <div className={classes.notificationBody}>

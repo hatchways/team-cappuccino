@@ -65,7 +65,7 @@ function List(props) {
   const [selectedList, setSelectedList] = useState({ items: [], _id: "" });
 
   useEffect(() => {
-    if (lists.find(element => element._id === selectedList._id) != undefined) {
+    if (lists.find(element => element._id === selectedList._id) !== undefined) {
       setSelectedList(lists.find(element => element._id === selectedList._id));
     }
   }, [lists, selectedList._id]);

@@ -26,7 +26,7 @@ function SelectListField(props) {
   useEffect(() => {
     if (
       list === "" &&
-      listValues.find(element => element._id === startingValue._id) != undefined
+      listValues.find(element => element._id === startingValue._id) !== undefined
     ) {
       setList(
         listValues.find(element => element._id === startingValue._id)._id
@@ -89,7 +89,7 @@ function SelectListField(props) {
         justifyContent: "center"
       }}
       InputProps={{ disableUnderline: true }}
-      inputProps={{ style: { paddingRight: "0px", fontSize: fontSize } }}
+      inputPositionProps={{ style: { paddingRight: "0px", fontSize: fontSize } }}
       SelectProps={GenerateSelectProps()}
     >
       <option value="" disabled>
