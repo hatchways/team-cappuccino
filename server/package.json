@@ -29,6 +29,7 @@
     "multer-s3": "^2.9.0",
     "nodemon": "^1.19.1",
     "puppeteer": "^1.19.0",
+    "puppeteer-cluster": "^0.17.0",
     "request": "^2.88.0",
     "uuid": "^3.3.3",
     "validator": "^11.1.0"

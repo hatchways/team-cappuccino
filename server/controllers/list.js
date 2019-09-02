@@ -44,28 +44,21 @@ exports.getAllLists = (req, res) => {
 
 // get single list
 exports.getSingleList = async (req, res) => {
-  return res.json(req.post);
+  return res.status(200).json(req.list);
 };
 
 // edit list
 exports.updateList = async (req, res) => {
-  try {
-    const _id = req.params.listId; // get list id
+  List.findById(req.params.listId).exec(async (err, list) => {
+    if(err) return res.status(400).json({ error: err });
 
-    const list = await List.findOne({ _id, user: req.profile._id });
+    if(!list) return res.status(400).json({ error: 'List is not found!'});
 
-    // check list
-    if(!list) return res.status(400).send({ error: 'List is not found!'});
-
-    // updating list and save it 
+    // update list
     updateObj(list, req.body, ["title"]);
-    list.save(); 
-
-    res.status(200).json(list);
-
-  }catch(e) {
-    res.status(400).json({ error: e });
-  }
+    await list.save();
+    return res.status(200).json(list);
+  });
 };
 
 // delete list

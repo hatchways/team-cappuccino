@@ -25,11 +25,15 @@ exports.getUser = (req, res) => {
 
 // get all users
 exports.getAllUsers = async (req, res) => {
-  User.find((err, users) => {
+  await User.find((err, users) => {
     if (err) return res.status(400).json({ error: err });
     res.json(users);
   }).select(" name email avatar joined");
 };
+
+// suggsted friends
+exports.getSuggestedFriends = (req, res) => {
+}
 
 // updating usera
 exports.updateUser = (req, res) => {

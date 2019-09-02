@@ -6,6 +6,9 @@ const authMiddleware = require('../middleware/auth-middleware');
 // @route GET api/users
 router.get('/users', UserController.getAllUsers);
 
+// @route GET api/users
+router.get('/users/suggestion', UserController.getSuggestedFriends);
+
 // @route GET user/:id
 router.get('/user/:userId', authMiddleware, UserController.getUser);
 

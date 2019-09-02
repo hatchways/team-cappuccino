@@ -49,9 +49,8 @@ exports.addItem = async (req, res) => {
         // save item
         await item.save();
         await foundList.save();
-        const { _id, name, prices, image, url } = item;
         await itemScrapping.end(); // quit browser
-
+        const { _id, name, prices, image, url } = item;
         res.status(200).json({ _id, name, url, prices, image });
       });
   } catch (e) {
@@ -60,7 +59,7 @@ exports.addItem = async (req, res) => {
   }
 };
 
-// getAllItems
+// get all items of list
 exports.getAllItems = async (req, res) => {
   Item.find({ list: req.params.listId }).exec((err, items) => {
     if (err) return res.status(400).json({ error: err });

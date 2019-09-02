@@ -32,20 +32,11 @@ const listSchema = new Schema({
 });
 
 
+// delete all items belong if list is removed
 listSchema.pre('remove', async function(next) {
     const list = this;
 
-    await Item.findOneAndUpdate(
-        {
-            "list": list._id
-        },
-        {
-            $pull: {
-                "list": list._id
-            }
-        }
-    );
-
+    await Item.deleteMany({ list: list._id });
     next();
 })
 
