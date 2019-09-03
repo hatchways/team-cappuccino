@@ -12,7 +12,7 @@ export const addItem = body => {
 export const getLists = () => {
   const userId = isAuthenticated().user._id;
 
-  return makeAuthCall({}, `/api/lists/by/${userId}`, "GET", false);
+  return makeAuthCall({}, `api/lists`, "GET", false);
 };
 
 export const createList = body => {
