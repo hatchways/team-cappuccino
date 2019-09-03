@@ -9,7 +9,10 @@ import shoppingPlaceHolder from "../../assets/shoppingPlaceHolder.png";
 
 function ScrappingConfirmation(props) {
   const classes = scrappingConfirmationStyles();
-  const { open, handleClose } = props;
+  const { open, handleClose, returnedInformation } = props;
+  const { _id, name, prices, image, url } = returnedInformation;
+
+  console.log(image);
 
   function handleConfirm() {
     handleClose();
@@ -26,11 +29,11 @@ function ScrappingConfirmation(props) {
           hasNewPrice={false}
           tileStyle={classes.tileStyle}
           item={{
-            name: "Some Name",
-            image: shoppingPlaceHolder,
-            link: "www.somelink.com",
+            name: name,
+            image: image,
+            link: url,
             oldPrice: "",
-            newPrice: "$90"
+            newPrice: prices === undefined ? "" : `$${prices[0].price}`
           }}
         />
         <div className={classes.buttonContainer}>

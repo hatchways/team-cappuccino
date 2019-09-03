@@ -1,17 +1,3 @@
-<<<<<<< HEAD
-import React from 'react';
-import Lists from '../components/list/lists';
-import CreateList from '../components/list/list-actions/add-list';
-
-const ListsPage = () => (
-    <div>
-        <Lists />
-        <CreateList />
-    </div>
-)
-
-export default ListsPage;
-=======
 import React, { useState, useEffect } from "react";
 import { withRouter } from "react-router-dom";
 import List from "../components/lists/List.js";
@@ -50,6 +36,7 @@ function Lists() {
       if (data.error) {
         console.log(data.error, "there was an error");
       } else {
+        console.log(data);
         setDownLoadState({ downloaded: true, lists: data });
       }
     });
@@ -95,4 +82,3 @@ function Lists() {
 }
 
 export default withRouter(Lists);
->>>>>>> bf4512d27fa80e4acf6c10ff1f56e784a74ad1f6

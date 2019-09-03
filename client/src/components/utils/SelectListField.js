@@ -97,7 +97,7 @@ function SelectListField(props) {
       </option>
       {listValues.map(element => (
         <option key={element._id} value={element._id}>
-          {element.name}
+          {element.title}
         </option>
       ))}
     </TextField>

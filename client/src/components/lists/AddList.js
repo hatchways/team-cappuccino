@@ -50,7 +50,7 @@ function AddList(props) {
   const [name, setName] = useState("");
 
   function uploadList() {
-    const body = { name: name, items: [] };
+    const body = { title: name, items: [] };
     createList(body).then(data => {
       if (data.error) {
         console.log(data.error);

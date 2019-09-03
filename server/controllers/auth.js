@@ -20,19 +20,13 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   const { email, password } = req.body;
 
-  if(!email || !password) return "";
+  if (!email || !password) return "";
 
   User.findOne({ email }, (err, user) => {
-<<<<<<< HEAD
-    if(err || !user) return res.status(400).json({
-      error: 'Email is not registered!'
-    });
-=======
     if (err || !user)
-      return res.status(401).json({
+      return res.status(400).json({
         error: "Email is not registered!"
       });
->>>>>>> 6f5c78ec63c2b6eb3b923dad286ebf794c26e251
 
     if (!user.authenticate(password))
       return res.status(401).json({
@@ -41,18 +35,10 @@ exports.login = async (req, res) => {
 
     // genrate token
     const token = user.generateToken();
-<<<<<<< HEAD
     const { _id, name, email, lists } = user;
-    res.json({ 
-      user: { _id, name, email, lists }, 
-    token});
-  })
-=======
-    const { _id, name, email } = user;
     res.json({
-      user: { _id, name, email },
+      user: { _id, name, email, lists },
       token
     });
   });
->>>>>>> 6f5c78ec63c2b6eb3b923dad286ebf794c26e251
 };

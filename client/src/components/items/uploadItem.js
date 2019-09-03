@@ -7,7 +7,8 @@ function UploadItem(props) {
   const { open, body, makeSnackBar, reloadData, onClose } = props;
   const [state, setState] = useState({
     loading: false,
-    confirmationDialog: false
+    confirmationDialog: false,
+    returnedInformation: {}
   });
 
   function changeBoolState(name) {
@@ -15,7 +16,11 @@ function UploadItem(props) {
   }
 
   function onCloseConfirmation() {
-    setState({ loading: false, confirmationDialog: false });
+    setState({
+      loading: false,
+      confirmationDialog: false,
+      returnedInformation: {}
+    });
     makeSnackBar("Item uploaded successfully");
     reloadData();
     reloadData();
@@ -29,8 +34,14 @@ function UploadItem(props) {
         makeSnackBar("Item upload failed");
         console.log(data.error);
       } else {
-        changeBoolState("loading");
-        changeBoolState("confirmationDialog");
+        console.log(data);
+        setState({
+          loading: false,
+          confirmationDialog: true,
+          returnedInformation: data
+        });
+        // changeBoolState("loading");
+        // changeBoolState("confirmationDialog");
       }
     });
   }
@@ -47,6 +58,7 @@ function UploadItem(props) {
       <ScrappingConfirmation
         open={state.confirmationDialog}
         handleClose={onCloseConfirmation}
+        returnedInformation={state.returnedInformation}
       />
     </>
   );
