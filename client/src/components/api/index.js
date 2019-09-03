@@ -11,6 +11,14 @@ export const getAllUsers = () => {
   return makeAuthCall({}, `/api/users`, "GET", false);
 };
 
+export const addFollowing = body => {
+  return makeAuthCall(body, `/api/user/follow`, "PUT", false);
+}
+
+export const removeFollowing = body => {
+  return makeAuthCall(body, `/api/user/unfollow`, "PUT", false);
+}
+
 export const addItem = body => {
   return makeAuthCall(body, `api/items/new/${body.list._id}`, "POST", false);
 };

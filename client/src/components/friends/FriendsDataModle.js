@@ -1,4 +1,10 @@
-import { getAllUsers, getUser } from "../api/index.js";
+import {
+  getAllUsers,
+  getUser,
+  addFollowing,
+  removeFollowing
+} from "../api/index.js";
+import { isAuthenticated } from "../auth/index.js";
 
 function FriendsData() {
   this.followingData = [];
@@ -19,7 +25,7 @@ FriendsData.prototype.fetchSuggestedData = function(completion) {
 FriendsData.prototype.followingFromSuggested = function(idList, myId) {
   let newSuggested = [];
   this.suggestedData.map((person, index) => {
-    if (idList.includes(person._id)) {
+    if (idList.find(id => id._id === person._id) !== undefined) {
       this.followingData.push(person);
     } else {
       if (person._id != myId) {
@@ -28,6 +34,8 @@ FriendsData.prototype.followingFromSuggested = function(idList, myId) {
     }
   });
   this.suggestedData = newSuggested;
+  console.log(this.followingData);
+  console.log(this.suggestedData);
 };
 
 FriendsData.prototype.fetchFollowingData = function(completion) {
@@ -35,6 +43,7 @@ FriendsData.prototype.fetchFollowingData = function(completion) {
     if (data.error) {
       console.log(data.error);
     } else {
+      console.log(data);
       this.followingFromSuggested(data.following, data._id);
       completion();
     }
@@ -44,17 +53,31 @@ FriendsData.prototype.fetchFollowingData = function(completion) {
 FriendsData.prototype.addFollowing = function(id, completion) {
   const person = this.suggestedData.find(el => el._id === id);
   const index = this.suggestedData.findIndex(el => el._id === id);
-  this.suggestedData.splice(index, 1);
-  this.followingData.push(person);
-  completion();
+  const body = { userId: isAuthenticated().user._id, followId: id };
+  addFollowing(body).then(data => {
+    if (data.error) {
+      console.log(data.error);
+    } else {
+      this.suggestedData.splice(index, 1);
+      this.followingData.push(person);
+      completion();
+    }
+  });
 };
 
 FriendsData.prototype.removeFollowing = function(id, completion) {
   const person = this.followingData.find(el => el._id === id);
   const index = this.followingData.findIndex(el => el._id === id);
-  this.followingData.splice(index, 1);
-  this.suggestedData.push(person);
-  completion();
+  const body = { userId: isAuthenticated().user._id, followId: id };
+  removeFollowing(body).then(data => {
+    if (data.error) {
+      console.log(data.error);
+    } else {
+      this.followingData.splice(index, 1);
+      this.suggestedData.push(person);
+      completion();
+    }
+  });
 };
 
 FriendsData.prototype.downloadAllData = function(completion) {
