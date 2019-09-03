@@ -4,9 +4,13 @@ const Item = require('./item');
 
 
 const listSchema = new Schema({
-    name: {
+    title: {
         type: String,
         required: true,
+        trim: true
+    },
+    image: {
+        type: String,
         trim: true
     },
     user: {
@@ -17,7 +21,11 @@ const listSchema = new Schema({
     items: [{
         type: Schema.Types.ObjectId,
         ref: 'Item'
-    }]
+    }],
+    date: {
+        type: Date,
+        default: Date.now
+    }
 },
 {
     timestamps: true

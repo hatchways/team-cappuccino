@@ -1,92 +1,95 @@
-const List = require('../models/list');
-const User = require('../models/user');
+const List = require("../models/list");
+const User = require("../models/user");
 const updateObj = require('./subs-controller/edit-model');
+const upload = require("../services/image-upload");
+const singleUpload = upload.single("listimage");
 
+// lists by id
+exports.listById = (req, res, next, id) => {
+  List.findById(id)
+    .populate("user", "_id name")
+    .exec((err, list) => {
+      if (err || !list) return res.status(400).json({ error: err });
+
+      req.list = list;
+      next();
+    });
+};
 // create list
 exports.createList = async (req, res) => {
-    const list = new List({
-        ...req.body,
-        user: req.user._id
-    });
+  const list = new List({
+    ...req.body,
+    user: req.params.userId
+  });
 
-    try {
-        // save list and update user model
-        await list.save(); 
-        // return list
-        res.status(201).send(list);
-    } catch(e) {
-        res.status(500).send(e);
-    }
-}
-
+  try {
+    await list.save();
+    res.status(201).send(list);
+  }catch(e) {
+    res.status(400).send({ error: e});
+  }
+};
 
 // get users lists
-exports.getAllLists = async (req, res) => {
-    try {
-        await req.user.populate('list').execPopulate();
-
-        res.send(req.user.list);
-    } catch(e) {
-        res.status(500).send(e);
+exports.getAllLists = (req, res) => {
+  List.find({ user: req.profile._id }).exec((err, lists) => {
+    if (err) {
+      return res.status(400).json({
+        error: err
+      });
     }
-}
-
+    return res.json(lists);
+  });
+};
 
 // get single list
 exports.getSingleList = async (req, res) => {
-    try {
-        // get list id
-        const _id = req.params.id;
-        // find list
-        const list = await List.findOne({ _id, user: req.user._id });
-        // check if list is available
-        if(!list) res.status(401).send({
-            error: 'List is not found!'
-        });
-        res.send(list);
-    } catch (e) {
-        res.status(500).send(e);
-    }
-}
-
+  return res.json(req.post);
+};
 
 // edit list
 exports.updateList = async (req, res) => {
-    try {
-        const _id = req.params.id;
+  try {
+    const _id = req.params.listId; // get list id
 
-        const list = await List.findOne({ _id, user: req.user._id });
+    const list = await List.findOne({ _id, user: req.profile._id });
 
-        // update list
-        updateObj(list, req.body, ["name"]);
+    // check list
+    if(!list) return res.status(400).send({ error: 'List is not found!'});
 
-        await list.save();
+    // updating list and save it 
+    updateObj(list, req.body, ["title"]);
+    list.save(); 
 
-        if(!list) res.status(400).send({
-            error: 'List is not found!'
-        });
-        // return list
-        res.status(201).json(list);
-    } catch(e) {
-        res.status(400).send({ error: e.message});
-    }
-}
+    res.status(200).json(list);
 
+  }catch(e) {
+    res.status(400).json({ error: e });
+  }
+};
 
 // delete list
-exports.deleteList = async (req, res) => {
-    try {
-        const _id = req.params.id;
-        // find list
-        const list = await List.findOne({ _id, user: req.user._id });
-        
-        list.remove(); // list remove()
+exports.deleteList = (req, res) => {
+  List.findById(req.params.listId).exec((err, list) => {
+    if(err) return res.status(400).json({ error: err });
+    // remove list
+    list.remove();
+    return res.status(200).json({ message: 'List is deleted!~' });
+  });
+};
 
-        if(!list) res.status(404).send({ error: 'List is not found!' });
+// uploading image for list
+exports.uploadListImage = async (req, res) => {
+  try {
+    singleUpload(req, res, async function(err) {
+      if (err)
+        return res.status(400).send({
+          errors: [{ title: "Image Upload Error", detail: err.message }]
+        });
 
-        // return list
-        res.send(list);
-    } catch(e) {
-        res.status(400).send({ error: e.message});
-    }
-}
+      return res.json({ 'listImageUrl': req.file.location });
+    });
+  } catch (e) {
+    res.status(400).send({ error: e.message });
+  }
+};

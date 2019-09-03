@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import { Grid, GridList, GridListTile } from "@material-ui/core";
 import Add from "@material-ui/icons/Add";
 import { makeStyles } from "@material-ui/core/styles";
-import listImage from "../assets/shoppingPlaceHolder.png";
+import listImage from "../../assets/shoppingPlaceHolder.png";
 import AddList from "./AddList.js";
 import EditList from "./EditList.js";
 
@@ -36,7 +36,7 @@ const listStyles = makeStyles(theme => ({
     bottom: 0,
     left: 0,
     borderRadius: "15px",
-    zIndex: 9999,
+    zIndex: 2,
     cursor: "pointer",
     backgroundColor: "rbga(0,0,0,0)",
     webkitTransition: "background-color 300ms linear",
@@ -45,7 +45,7 @@ const listStyles = makeStyles(theme => ({
     "&:hover": {
       cursor: "pointer",
       backgroundColor: "rgba(128, 128, 128, 0.20)",
-      zIndex: 9999,
+      zIndex: 2,
       webkitTransition: "background-color 300ms linear",
       msTransition: "background-color 300ms linear",
       transition: "background-color 300ms linear"
@@ -54,24 +54,39 @@ const listStyles = makeStyles(theme => ({
 }));
 
 function List(props) {
-  const { modalState, handleModalState } = props;
+  const {
+    modalState,
+    handleModalState,
+    lists,
+    reloadData,
+    makeSnackBar
+  } = props;
   const classes = listStyles();
-  const listNames = ["Clothes", "Furniture", "Luxury"];
+  const [selectedList, setSelectedList] = useState({ items: [], _id: "" });
+
+  useEffect(() => {
+    if (lists.find(element => element._id === selectedList._id) != undefined) {
+      setSelectedList(lists.find(element => element._id === selectedList._id));
+    }
+  }, [lists, selectedList._id]);
 
   return (
     <div className={classes.shoppingListsContainer}>
       <h1 className={classes.shoppingListText}>My Shopping Lists:</h1>
       <GridList cellHeight={400}>
-        {listNames.map(list => (
+        {lists.map(list => (
           <GridListTile
-            key={list}
+            key={list.title}
             style={{
               padding: "0px",
               width: "288px",
               height: "400px"
             }}
             className={classes.listTile}
-            onClick={handleModalState("editList")}
+            onClick={e => {
+              setSelectedList(list);
+              handleModalState("editList")();
+            }}
           >
             <div className={classes.hoverTransition} />
             <Grid container direction="column" alignItems="center">
@@ -92,9 +107,9 @@ function List(props) {
                   textAlign: "center"
                 }}
               >
-                {list}
+                {list.title}
               </h2>
-              <h3 style={{ marginTop: "10px" }}>x items</h3>
+              <h3 style={{ marginTop: "10px" }}>{list.__v} items</h3>
             </Grid>
           </GridListTile>
         ))}
@@ -126,6 +141,8 @@ function List(props) {
             <AddList
               open={modalState.addList}
               onClose={handleModalState("addList")}
+              reloadData={reloadData}
+              makeSnackBar={makeSnackBar}
             />
             <h1 style={{ textAlign: "center" }}>Add New List</h1>
           </Grid>
@@ -134,6 +151,10 @@ function List(props) {
       <EditList
         open={modalState.editList}
         handleModalState={handleModalState}
+        list={selectedList}
+        lists={lists}
+        reloadData={reloadData}
+        makeSnackBar={makeSnackBar}
       />
     </div>
   );

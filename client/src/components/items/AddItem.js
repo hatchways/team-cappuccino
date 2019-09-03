@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import { TextField, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import SelectField from "../utils/SelectListField";
+import UploadItem from "./uploadItem.js";
 
 const addItemStyles = makeStyles(theme => ({
   addNewItemFont: {
@@ -36,42 +38,43 @@ const addItemStyles = makeStyles(theme => ({
 
 function AddItem(props) {
   const classes = addItemStyles();
-  const { open, onClose } = props;
-  const [list, setList] = React.useState("");
-  const lists = ["a", "b", "c"];
+  const {
+    open,
+    onClose,
+    reloadData,
+    lists,
+    makeSnackBar,
+    startingValue
+  } = props;
+  const [state, setState] = useState({
+    list: startingValue,
+    inputURL: "",
+    body: {},
+    uploading: false
+  });
 
-  function handleChangeList(event) {
-    setList(event.target.value);
+  const itemNameTemp = "Some Name";
+
+  function handleChangeList(selectedList) {
+    setState({ ...state, list: selectedList });
   }
-  function GenerateSelectProps() {
-    return list === ""
-      ? {
-          native: true,
-          style: {
-            width: "100%",
-            textAlignLast: "center",
-            color: "grey"
-          },
-          inputProps: {
-            style: {
-              width: "100%"
-            }
-          }
-        }
-      : {
-          native: true,
-          style: {
-            width: "100%",
-            textAlignLast: "center",
-            color: "black"
-          },
-          inputProps: {
-            style: {
-              width: "100%"
-            }
-          }
-        };
+
+  function handleChangeUrl(newURL) {
+    setState({ ...state, inputURL: newURL });
   }
+
+  function handleClick() {
+    setState({
+      ...state,
+      uploading: true,
+      body: { name: itemNameTemp, url: state.inputURL, list: state.list }
+    });
+  }
+  function handleUploadClose() {
+    setState({ ...state, uploading: false, inputURL: "" });
+    onClose();
+  }
+
   return (
     <Dialog
       open={open}
@@ -86,6 +89,13 @@ function AddItem(props) {
         }
       }}
     >
+      <UploadItem
+        open={state.uploading}
+        body={state.body}
+        makeSnackBar={makeSnackBar}
+        reloadData={reloadData}
+        onClose={handleUploadClose}
+      />
       <DialogTitle>
         <p className={classes.addNewItemFont}>Add New Item</p>
       </DialogTitle>
@@ -102,6 +112,10 @@ function AddItem(props) {
           Paste link to item
         </h3>
         <TextField
+          value={state.inputURL}
+          onChange={e => {
+            handleChangeUrl(e.target.value);
+          }}
           InputProps={{
             disableUnderline: true,
             style: { width: "100%" }
@@ -122,34 +136,19 @@ function AddItem(props) {
         <h3 className={classes.selectListFont} style={{ textAlign: "center" }}>
           Select list
         </h3>
-        <TextField
-          select
-          value={list}
-          onChange={handleChangeList}
-          style={{
-            backgroundColor: "white",
-            width: "75%",
-            height: "50px",
-            borderRadius: "5px",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center"
-          }}
-          InputProps={{ disableUnderline: true }}
-          inputProps={{ style: { paddingRight: "0px" } }}
-          SelectProps={GenerateSelectProps()}
+        <SelectField
+          listValues={lists}
+          promptText="Select"
+          onChangeHandler={handleChangeList}
+          fillWidthOf="75%"
+          startingValue={startingValue}
+        />
+        <Button
+          size="large"
+          variant="contained"
+          className={classes.button}
+          onClick={handleClick}
         >
-          <option value="" disabled>
-            Select
-          </option>
-          {lists.map(someList => (
-            <option key={someList} value={someList}>
-              {someList}
-            </option>
-          ))}
-        </TextField>
-        <Button size="large" variant="contained" className={classes.button}>
           Add Item
         </Button>
       </DialogContent>

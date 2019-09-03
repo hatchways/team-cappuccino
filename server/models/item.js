@@ -1,16 +1,14 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const List = require('./list');
-const User = require('./user');
+
 
 
 const itemSchema = new Schema({
     name: {
         type: String,
-        required: true,
         trim: true
     },
-    price: [{
+    prices: [{
         date: {
             type: Date,
             default: Date.now
@@ -21,7 +19,8 @@ const itemSchema = new Schema({
     url: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
+        unique: true
     }, 
     image: {
         type: String,
@@ -35,6 +34,7 @@ const itemSchema = new Schema({
         ref: 'List'
     }
 });
+
 
 
 

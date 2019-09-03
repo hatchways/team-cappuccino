@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, Redirect } from "react-router-dom";
+import { withRouter } from "react-router";
 import { authenticate, login } from "../auth";
 import { Button } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
@@ -52,6 +53,10 @@ class Login extends React.Component {
     loading: false
   };
 
+  componentDidMount() {
+    document.body.style.backgroundColor = "white";
+  }
+
   handleChange = name => event => {
     this.setState({ error: "" });
     this.setState({ [name]: event.target.value });
@@ -80,11 +85,10 @@ class Login extends React.Component {
 
   render() {
     const { email, password, error, loading, redirectToReferer } = this.state;
-    console.log(this.state);
     const { classes } = this.props;
 
     if (redirectToReferer) {
-      return <Redirect to="/profile" />;
+      return <Redirect to="/lists" />;
     }
 
     return (
@@ -107,6 +111,7 @@ class Login extends React.Component {
           <TextField
             id="Email"
             label="Email"
+            type="email"
             variant="outlined"
             onChange={this.handleChange("email")}
             value={email}
@@ -115,6 +120,7 @@ class Login extends React.Component {
           <TextField
             id="Password"
             label="Password"
+            type="password"
             variant="outlined"
             autoComplete="current-password"
             onChange={this.handleChange("password")}
@@ -144,4 +150,4 @@ class Login extends React.Component {
   }
 }
 
-export default withStyles(FormContainer)(Login);
+export default withRouter(withStyles(FormContainer)(Login));

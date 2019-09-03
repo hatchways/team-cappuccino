@@ -28,6 +28,7 @@ export const login = user => {
         .catch(err => console.log(err));
 }
 
+
 export const authenticate = (token, next) => {
     if(typeof window !== "undefined") {
         localStorage.setItem("token", JSON.stringify(token))
@@ -35,8 +36,10 @@ export const authenticate = (token, next) => {
     next();
 }
 
-export const logout = () => {
-    localStorage.removeItem("token");
+export const logout = async () => {
+    await localStorage.removeItem("token");
+    return;
+    // history.push('/');
 }
 
 // check authentication
