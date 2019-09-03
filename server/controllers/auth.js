@@ -20,11 +20,11 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   const { email, password } = req.body;
 
-  if(!email || !password) return "";
+  if (!email || !password) return "";
 
   User.findOne({ email }, (err, user) => {
     if (err || !user)
-      return res.status(401).json({
+      return res.status(400).json({
         error: "Email is not registered!"
       });
 
@@ -35,9 +35,9 @@ exports.login = async (req, res) => {
 
     // genrate token
     const token = user.generateToken();
-    const { _id, name, email } = user;
+    const { _id, name, email, lists } = user;
     res.json({
-      user: { _id, name, email },
+      user: { _id, name, email, lists },
       token
     });
   });

@@ -7,7 +7,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import listImage from "../../assets/shoppingPlaceHolder.png";
 import AddItem from "../items/AddItem.js";
 import ItemCard from "../items/ItemCard.js";
-import { deleteItem } from "../api/index.js";
+import { deleteItem, getAllListItems } from "../api/index.js";
+import LoadingSpinner from "../utils/LoadingSpinner.js";
 
 const editListStyles = makeStyles(theme => ({
   titleFont: {
@@ -64,42 +65,80 @@ function EditList(props) {
     reloadData,
     makeSnackBar
   } = props;
+  const [state, setState] = useState({
+    downloaded: false,
+    loadingData: false,
+    listData: [{}]
+  });
 
-  console.log(list);
+  function downloadListData() {
+    if (open && !state.downloaded && !state.loadingData) {
+      setState({ ...state, loadingData: true });
+      getAllListItems(list._id).then(data => {
+        console.log(data);
+        setState({ loadingData: false, listData: data, downloaded: true });
+      });
+    }
+  }
+
+  useEffect(() => {
+    downloadListData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
 
   function deleteAItem(id) {
-    deleteItem(id);
-    reloadData();
+    deleteItem(id).then(data => {
+      reloadData();
+      getAllListItems(list._id).then(data => {
+        console.log(data);
+        setState({ loadingData: false, listData: data, downloaded: true });
+      });
+      makeSnackBar("Item removed!");
+    });
+  }
+
+  function onClose() {
+    setState({ downloaded: false, loadingData: false, listData: [{}] });
+    handleModalState("editList")();
   }
 
   return (
     <Dialog
       open={open}
-      onClose={handleModalState("editList")}
+      onClose={onClose}
       PaperProps={{ style: { background: "WhiteSmoke", width: "50vw" } }}
     >
-      <DialogTitle className={classes.titleFont}>{list.name}</DialogTitle>
+      {state.loadingData && <LoadingSpinner />}
+      <DialogTitle className={classes.titleFont}>{list.title}</DialogTitle>
       <h1 className={classes.itemCountFont}>{list.__v} items</h1>
       <div className={classes.gridListContainer}>
         <GridList cols={1} className={classes.gridListStyles}>
-          {list.items.map(item => (
-            <ItemCard
-              hasButton={true}
-              buttonOnClick={() => {
-                console.log(item);
-                // deleteAItem(item);
-              }}
-              hasNewPrice={true}
-              tileStyle={classes.tileStyle}
-              item={{
-                name: "Some Name",
-                image: listImage,
-                link: "www.somelink.com",
-                oldPrice: "$90",
-                newPrice: "$60"
-              }}
-            />
-          ))}
+          {state.downloaded &&
+            state.listData.map(item => (
+              <ItemCard
+                key={item._id}
+                hasButton={true}
+                buttonOnClick={() => {
+                  console.log(item);
+                  deleteAItem(item._id);
+                }}
+                hasNewPrice={true}
+                tileStyle={classes.tileStyle}
+                item={{
+                  name: item.name,
+                  image: item.image,
+                  link: item.url,
+                  oldPrice:
+                    item.prices === undefined
+                      ? ""
+                      : item.prices.length > 1
+                      ? `$${item.prices[1].price}`
+                      : "",
+                  newPrice:
+                    item.prices === undefined ? "" : `$${item.prices[0].price}`
+                }}
+              />
+            ))}
         </GridList>
         <Button
           size="large"

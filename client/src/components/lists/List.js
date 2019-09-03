@@ -76,7 +76,7 @@ function List(props) {
       <GridList cellHeight={400}>
         {lists.map(list => (
           <GridListTile
-            key={list.name}
+            key={list.title}
             style={{
               padding: "0px",
               width: "288px",
@@ -107,7 +107,7 @@ function List(props) {
                   textAlign: "center"
                 }}
               >
-                {list.name}
+                {list.title}
               </h2>
               <h3 style={{ marginTop: "10px" }}>{list.__v} items</h3>
             </Grid>

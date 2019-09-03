@@ -10,7 +10,7 @@ const authMiddleWare = require('../middleware/auth-middleware');
 router.post("/lists/new/:userId", authMiddleWare, ListController.createList);
 
 // @route GET /api/lists
-router.get('/lists', authMiddleWare, ListController.getAllLists);
+router.get('/lists/by/:userId', authMiddleWare, ListController.getAllLists);
 
 // @route GET /api/lists/:id
 router.get('/lists/:listId', authMiddleWare, ListController.getSingleList);

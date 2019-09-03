@@ -36,6 +36,7 @@ function Lists() {
       if (data.error) {
         console.log(data.error, "there was an error");
       } else {
+        console.log(data);
         setDownLoadState({ downloaded: true, lists: data });
       }
     });

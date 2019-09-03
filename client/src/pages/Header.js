@@ -50,12 +50,12 @@ function Header(props) {
         </Grid>
 
         {props.location.pathname !== "/register" &&
-          props.location.pathname !== "/login" && (
+          props.location.pathname !== "/login" &&  props.location.pathname === "*" &&(
             <HeaderRightBar changeLocation={changeLocation} />
           )}
       </Toolbar>
     </AppBar>
   );
-};
+}
 
 export default withRouter(Header);

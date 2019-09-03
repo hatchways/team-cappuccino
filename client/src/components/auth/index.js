@@ -36,9 +36,10 @@ export const authenticate = (token, next) => {
     next();
 }
 
-export const logout = async history => {
+export const logout = async () => {
     await localStorage.removeItem("token");
-    return history.push('/');
+    return;
+    // history.push('/');
 }
 
 // check authentication

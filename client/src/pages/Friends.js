@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { makeStyles } from "@material-ui/styles";
 import {
   Tabs,
@@ -11,6 +11,8 @@ import {
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import SearchIcon from "@material-ui/icons/Search";
 import CancelIcon from "@material-ui/icons/Cancel";
+import { getAllUsers } from "../components/api/index.js";
+import FriendsData from "../components/friends/FriendsDataModle.js";
 
 const friendsPageStyles = makeStyles(theme => ({
   pageContainer: {
@@ -93,6 +95,20 @@ function FriendsPage() {
   const classes = friendsPageStyles();
   const [currentTab, setTab] = useState(0);
   const [currentSearch, setSearch] = useState("");
+  const [state, setState] = useState({
+    downloading: false,
+    downloaded: false,
+    changedLists: false
+  });
+  let [friendsData, updateFriendsData] = useState(new FriendsData());
+
+  useEffect(() => {
+    setState({ ...state, downloading: true });
+    friendsData.downloadAllData(() => {
+      setState({ ...state, downloading: false });
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function handleChange(event, newTab) {
     setTab(newTab);
@@ -102,27 +118,8 @@ function FriendsPage() {
     setSearch(event.target.value);
   }
 
-  const followingList = [
-    "following person 1",
-    "following person 2",
-    "following person 3",
-    "following person 3",
-    "following person 3",
-    "following person 4",
-    "following person 5"
-  ];
-  const suggestedList = [
-    "suggested person",
-    "suggested person",
-    "suggested person",
-    "suggested person",
-    "suggested person",
-    "suggested person",
-    "suggested person"
-  ];
-
   function PeopleCard(props) {
-    const { name } = props;
+    const { name, id } = props;
     return (
       <div className={classes.peopleCard}>
         <div className={classes.avatarAndName}>
@@ -131,8 +128,23 @@ function FriendsPage() {
           </Avatar>
           <p>{name}</p>
         </div>
-        <Button variant="outlined" className={classes.buttonStyle} size="large">
-          Follow
+        <Button
+          variant="outlined"
+          className={classes.buttonStyle}
+          size="large"
+          onClick={
+            currentTab === 1
+              ? () =>
+                  friendsData.addFollowing(id, () =>
+                    setState({ ...state, changedLists: !state.changedLists })
+                  )
+              : () =>
+                  friendsData.removeFollowing(id, () =>
+                    setState({ ...state, changedLists: !state.changedLists })
+                  )
+          }
+        >
+          {currentTab === 1 ? "Follow" : "Unfollow"}
         </Button>
       </div>
     );
@@ -140,8 +152,10 @@ function FriendsPage() {
 
   function makePeoples(list) {
     return list
-      .filter(person => person.includes(currentSearch))
-      .map((person, index) => <PeopleCard key={index} name={person} />);
+      .filter(person => person.name.includes(currentSearch))
+      .map((person, index) => (
+        <PeopleCard key={index} name={person.name} id={person._id} />
+      ));
   }
 
   function SearchArea() {
@@ -182,8 +196,8 @@ function FriendsPage() {
           />
 
           {currentTab === 1
-            ? makePeoples(suggestedList)
-            : makePeoples(followingList)}
+            ? makePeoples(friendsData.suggestedData)
+            : makePeoples(friendsData.followingData)}
         </div>
       </>
     );

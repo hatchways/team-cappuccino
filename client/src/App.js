@@ -11,6 +11,7 @@ import FriendsPage from "./pages/Friends";
 import PrivateRoute from "./components/auth/PrivateRoute";
 import "./App.css";
 import LoggedInRoute from "./components/auth/LoggedinRoute";
+import NotFoundPage from "./pages/NotFound";
 
 
 class App extends React.Component {
@@ -20,15 +21,16 @@ class App extends React.Component {
         <BrowserRouter>
           <Fragment>
             <Header />
-            <Switch>
-              <Route exact path="/" render={() => <Redirect to="/login" />} />
-              {/* Auth routes */}
-              <LoggedInRoute exact path="/login" component={LoginPage} />
-              <LoggedInRoute exact path="/register" component={SignUpPage} />
-              <Route path="/friends" component={FriendsPage} />
-              <PrivateRoute exact path="/profile" component={ProfilePage} />
-              <PrivateRoute exact path="/lists" component={ListPage} />
-            </Switch>
+              <Switch>
+                <Route exact path="/" render={() => <Redirect to="/login" />} />
+                {/* Auth routes */}
+                <LoggedInRoute exact path="/login" component={LoginPage} />
+                <LoggedInRoute exact path="/register" component={SignUpPage} />
+                <Route path="/friends" component={FriendsPage} />
+                <PrivateRoute exact path="/profile" component={ProfilePage} />
+                <PrivateRoute exact path="/lists" component={ListPage} />
+              </Switch>
+              <Route path="*" component={NotFoundPage} />
           </Fragment>
         </BrowserRouter>
       </MuiThemeProvider>

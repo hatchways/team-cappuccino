@@ -65,12 +65,13 @@ function AddItem(props) {
 
   function handleClick() {
     setState({
+      ...state,
       uploading: true,
       body: { name: itemNameTemp, url: state.inputURL, list: state.list }
     });
   }
   function handleUploadClose() {
-    setState({ ...state, uploading: false });
+    setState({ ...state, uploading: false, inputURL: "" });
     onClose();
   }
 

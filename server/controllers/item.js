@@ -23,7 +23,7 @@ exports.addItem = async (req, res) => {
 
   try {
     // start scrapping
-    await itemScrapping.initialize();
+    await itemScrapping.initialize(url);
     let details = await itemScrapping.getProductDetails(url);
     // convert string to price
     const itemPrice = parseFloat(details.price.replace("$", ""));
@@ -75,7 +75,7 @@ exports.getSingleItem = async (req, res) => {
 
 // Delete Item
 exports.deleteItem = async (req, res) => {
-  const _id = req.params.id;
+  const _id = req.params.itemId;
 
   try {
     await Item.findOne({ _id, user: req.user._id })
@@ -87,9 +87,22 @@ exports.deleteItem = async (req, res) => {
         if (!result) res.status(400).send({ error: "Item is not found!" });
 
         // upate List and User
-        List.findByIdAndUpdate(result.list, { $unset: { items: _id } });
+        await List.findByIdAndUpdate(result.list._id, {
+          $pull: { items: _id },
+          $inc: { __v: -1 }
+        }).exec(function(err, newList) {
+          if (err) {
+            return res.status(400).json({ error: err });
+          }
+        });
         ``;
-        User.findByIdAndUpdate(result.user, { $unset: { items: _id } });
+        await User.findByIdAndUpdate(result.user._id, {
+          $pull: { items: _id }
+        }).exec(function(err, newUser) {
+          if (err) {
+            return res.status(400).json({ error: err });
+          }
+        });
 
         // remove item
         result.remove();
@@ -134,7 +147,7 @@ new CronJob(
       // loop to find item prices
       await Promise.all(items.map(async (item) => {
         // 2. Scrap the price with each item's url
-        await priceScrapping.initialize();
+        await priceScrapping.initialize(item.url);
         let scrappedInfo = await priceScrapping.getProductPrice(item.url);
         // convert string to price
         const newItemPrice = await parseFloat(scrappedInfo.price.replace("$", ""));

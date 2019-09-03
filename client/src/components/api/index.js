@@ -1,22 +1,32 @@
+// get list
 import makeAuthCall from "./makeAuthCall.js";
-import { isAuthenticated } from '../auth';
+import { isAuthenticated } from "../auth/index.js";
 
-export const getUser = token => {
-  return makeAuthCall({}, `/api/user`, "GET", false);
+export const getUser = () => {
+  const userId = isAuthenticated().user._id;
+  return makeAuthCall({}, `/api/user/${userId}`, "GET", false);
+};
+
+export const getAllUsers = () => {
+  return makeAuthCall({}, `/api/users`, "GET", false);
 };
 
 export const addItem = body => {
-  return makeAuthCall(body, `api/items`, "POST", false);
+  return makeAuthCall(body, `api/items/new/${body.list._id}`, "POST", false);
+};
+
+export const getAllListItems = listId => {
+  return makeAuthCall({}, `api/list/${listId}/items`, "GET", false);
 };
 
 export const getLists = () => {
   const userId = isAuthenticated().user._id;
-
-  return makeAuthCall({}, `api/lists`, "GET", false);
+  return makeAuthCall({}, `api/lists/by/${userId}`, "GET", false);
 };
 
 export const createList = body => {
-  return makeAuthCall(body, `api/lists`, "POST", false);
+  const userId = isAuthenticated().user._id;
+  return makeAuthCall(body, `api/lists/new/${userId}`, "POST", false);
 };
 
 export const deleteItem = id => {
