@@ -2,7 +2,7 @@ const List = require("../models/list");
 const User = require("../models/user");
 const updateObj = require('./subs-controller/edit-model');
 const upload = require("../services/image-upload");
-const singleUpload = upload.single("listimage");
+const singleUpload = upload.single("listImage");
 
 // lists by id
 exports.listById = (req, res, next, id) => {
@@ -17,17 +17,27 @@ exports.listById = (req, res, next, id) => {
 };
 // create list
 exports.createList = async (req, res) => {
-  const list = new List({
-    ...req.body,
-    user: req.params.userId
-  });
+  // uploading image
+  singleUpload(req, res, async function(err) {
+    if (err) return res.status(400).send({ errors: [{ title: "Image Upload Error", detail: err.message }] });
 
-  try {
-    await list.save();
-    res.status(201).send(list);
-  }catch(e) {
-    res.status(400).send({ error: e});
-  }
+    if( req.file === undefined ) return res.status(400).json( 'Error: No File Selected' );
+
+    // create new list
+    const list = new List({
+      ...req.body,
+      image: req.file.location,
+      user: req.params.userId
+    });
+
+    try {
+      await list.save();
+      res.status(201).send(list);
+    }catch(e) {
+      res.status(400).send({ error: e});
+    }
+
+  });
 };
 
 // get users lists

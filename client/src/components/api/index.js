@@ -47,12 +47,21 @@ export const getAllListItems = listId => {
 
 export const getLists = () => {
   const userId = isAuthenticated().user._id;
+  
   return makeAuthCall({}, `api/lists/by/${userId}`, "GET", false);
 };
 
 export const createList = body => {
   const userId = isAuthenticated().user._id;
-  return makeAuthCall(body, `api/lists/new/${userId}`, "POST", false);
+  return axios({
+    method: "POST",
+    url: `/api/lists/new/${userId}`,
+    data: body,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Authorization: `Bearer ${isAuthenticated().token}`
+    },
+  });
 };
 
 export const deleteItem = id => {

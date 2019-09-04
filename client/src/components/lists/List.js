@@ -97,7 +97,7 @@ function List(props) {
                   borderRadius: "15px 15px 0px 0px"
                 }}
               >
-                <img src={listImage} alt="list" width="100%" />
+                <img src={!list.image ? listImage : list.image} alt="list" width="100%" />
               </div>
               <h2
                 style={{

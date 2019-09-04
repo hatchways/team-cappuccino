@@ -61,6 +61,7 @@ exports.deleteUser = (req, res) => {
 // upload user avatar
 exports.uploadAvatar = (req, res) => {
   const user = User.findById(req.params.userId).exec((err, user) => {
+    if(err) return res.status(400).send({ errors: err.message });
     // uploading image
     singleUpload(req, res, function(err) {
       if (err) return res.status(400).send({ errors: [{ title: "Image Upload Error", detail: err.message }] });

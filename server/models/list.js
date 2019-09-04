@@ -10,8 +10,7 @@ const listSchema = new Schema({
         trim: true
     },
     image: {
-        type: String,
-        trim: true
+        type: String
     },
     user: {
         type: Schema.Types.ObjectId,
