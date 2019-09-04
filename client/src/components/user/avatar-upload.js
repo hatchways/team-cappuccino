@@ -1,4 +1,5 @@
 import React from "react";
+import { withRouter } from 'react-router'
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -7,6 +8,7 @@ import { Paper } from "@material-ui/core";
 import Wallpaper from "@material-ui/icons/Wallpaper";
 import { makeStyles } from "@material-ui/core/styles";
 import { uploadAvatar } from "../api";
+import LoadingSpinner from "../utils/LoadingSpinner";
 
 const addAvatarStyles = makeStyles(theme => ({
   addNewAvatarFont: {
@@ -41,8 +43,10 @@ const addAvatarStyles = makeStyles(theme => ({
 
 function AvatarUpload(props) {
   const classes = addAvatarStyles();
-  const { open, onClose, reloadData } = props;
+  const { open, onClose } = props;
   const [image, setImage] = React.useState(null);
+  const [error, setError] = React.useState(null);
+  const [loading, setLoading] = React.useState(false);
 
   function fileChangedHandler(e) {
     const file = e.target.files[0];
@@ -55,10 +59,25 @@ function AvatarUpload(props) {
 
   function submitImage(event) {
     event.preventDefault();
+    setLoading(true);
     const formData = new FormData();
     formData.append("image", image);
-    uploadAvatar(formData);
-    reloadData();
+    uploadAvatar(formData)
+      .then(res => {
+        const data = res.data;
+        if (data.error) {
+          console.log(data.error);
+          setLoading(false);
+          setError(data.error); // set error
+        } else {
+          setLoading(false);
+          onClose();
+          window.location.reload();
+        }
+      })
+      .catch(e => {
+        console.log(e);
+      });
   }
 
   return (
@@ -87,6 +106,8 @@ function AvatarUpload(props) {
           padding: "0px"
         }}
       >
+        {loading ? <LoadingSpinner /> : ""}
+        {error ? <p>{error}</p> : ""}
         <input
           accept="image/*"
           id="upload-list-photo"
@@ -155,4 +176,4 @@ function AvatarUpload(props) {
   );
 }
 
-export default AvatarUpload;
+export default withRouter(AvatarUpload);

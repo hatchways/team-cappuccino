@@ -58,10 +58,6 @@ function Lists() {
     });
   };
 
-  const handleChange = event => {
-    setList(event.target.value);
-  };
-
   return (
     <div>
       <AddItemBar

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getUser } from "../components/api";
 import { isAuthenticated, logout } from "../components/auth";
 import { deleteUser } from "../components/api";
-import AvatarUpload from "../components/user/avatar-upload";
+import AvatarUpload from "../components/user/Avatar-Upload";
 import { Avatar, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import LoadingSpinner from "../components/utils/LoadingSpinner.js";

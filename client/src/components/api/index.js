@@ -15,11 +15,14 @@ export const getAllUsers = () => {
 export const uploadAvatar = (body) => {
   const userId = isAuthenticated().user._id;
 
-  axios.put(`/api/user/${userId}/avatar`, body, {
+  return axios({
+    method: "PUT",
+    url: `/api/user/${userId}/avatar`,
+    data: body,
     headers: {
       'Content-Type': 'multipart/form-data',
       Authorization: `Bearer ${isAuthenticated().token}`
-    },
+    }
   });
 }
 

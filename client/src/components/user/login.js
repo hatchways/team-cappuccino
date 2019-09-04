@@ -4,7 +4,7 @@ import { withRouter } from "react-router";
 import { authenticate, login } from "../auth";
 import { Button } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
-import Spinner from "../utils/spinner";
+import LoadingSpinner from "../utils/LoadingSpinner";
 import TextField from "@material-ui/core/TextField";
 
 const FormContainer = theme => ({
@@ -102,7 +102,7 @@ class Login extends React.Component {
           </div>
           {loading ? (
             <div>
-              <Spinner />
+              <LoadingSpinner />
             </div>
           ) : (
             ""
