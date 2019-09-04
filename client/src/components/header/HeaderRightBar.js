@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Badge } from "@material-ui/core";
-import AccountCircle from "@material-ui/icons/AccountCircle";
 import { makeStyles, withStyles } from "@material-ui/styles";
+import { Avatar } from "@material-ui/core";
 import HeaderNotification from "./HeaderNotification.js";
+import { getUser } from '../api';
+import { isAuthenticated } from '../auth';
 import { logout } from "../../components/auth";
 
 const headerRightBarStyles = makeStyles(theme => ({
@@ -53,8 +55,27 @@ const StyledBadge = withStyles(theme => ({
 function HeaderRightBar(props) {
   const classes = headerRightBarStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [state, setState] = useState({
+    user: ""
+  });
   const notificationElements = ["a", "b", "c", "d", "e"];
   const { changeLocation } = props;
+
+  useEffect(() => {
+    onMount();
+  }, []);
+
+  function onMount() {
+    const token = isAuthenticated().token;
+    getUser(token).then(data => {
+      if (data.error) {
+        setState({ user: { name: "" }, error: data.error, loading: false });
+      } else {
+        console.log(data);
+        setState({ error: "", user: data, loading: false });
+      }
+    });
+  }
 
   function handleClick(event) {
     setAnchorEl(event.currentTarget);
@@ -98,7 +119,10 @@ function HeaderRightBar(props) {
         handleClose={handleClose}
         elements={notificationElements}
       />
-      <AccountCircle className={classes.accountCircle} />
+      <Avatar 
+        src={state.user.avatar}
+        className={classes.accountCircle} 
+      />
       <Button
         className={classes.profile}
         onClick={() => {

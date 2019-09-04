@@ -8,7 +8,6 @@ import {
   TextField,
   InputAdornment
 } from "@material-ui/core";
-import AccountCircle from "@material-ui/icons/AccountCircle";
 import SearchIcon from "@material-ui/icons/Search";
 import CancelIcon from "@material-ui/icons/Cancel";
 import { getAllUsers } from "../components/api/index.js";
@@ -119,13 +118,11 @@ function FriendsPage() {
   }
 
   function PeopleCard(props) {
-    const { name, id } = props;
+    const { name, avatar, id } = props;
     return (
       <div className={classes.peopleCard}>
         <div className={classes.avatarAndName}>
-          <Avatar className={classes.avatarStyle}>
-            <AccountCircle />
-          </Avatar>
+          <Avatar src={avatar} className={classes.avatarStyle} />
           <p>{name}</p>
         </div>
         <Button
@@ -154,7 +151,7 @@ function FriendsPage() {
     return list
       .filter(person => person.name.includes(currentSearch))
       .map((person, index) => (
-        <PeopleCard key={index} name={person.name} id={person._id} />
+        <PeopleCard key={index} name={person.name} avatar={person.avatar} id={person._id} />
       ));
   }
 

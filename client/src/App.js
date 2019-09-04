@@ -26,11 +26,10 @@ class App extends React.Component {
                 {/* Auth routes */}
                 <LoggedInRoute exact path="/login" component={LoginPage} />
                 <LoggedInRoute exact path="/register" component={SignUpPage} />
-                <Route path="/friends" component={FriendsPage} />
+                <PrivateRoute path="/friends" component={FriendsPage} />
                 <PrivateRoute exact path="/profile" component={ProfilePage} />
                 <PrivateRoute exact path="/lists" component={ListPage} />
               </Switch>
-              <Route path="*" component={NotFoundPage} />
           </Fragment>
         </BrowserRouter>
       </MuiThemeProvider>

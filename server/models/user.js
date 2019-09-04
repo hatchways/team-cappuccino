@@ -30,7 +30,7 @@ const userSchema = new Schema({
   salt: String,
   avatar: {
     type: String,
-    trim: true
+    default: ""
   },
   joined: {
     type: Date,

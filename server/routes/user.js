@@ -19,7 +19,7 @@ router.patch('/user/:userId', authMiddleware, UserController.updateUser);
 router.delete('/user/:userId', authMiddleware, UserController.deleteUser);
 
 // @route POST api/user/:id/avatar
-router.post('/user/:userId/avatar', authMiddleware, UserController.uploadAvatar);
+router.put('/user/:userId/avatar', authMiddleware, UserController.uploadAvatar);
 
 // @route PUT api/user/follow
 router.put(

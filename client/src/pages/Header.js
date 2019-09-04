@@ -5,6 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import AppIcon from "../assets/logo.png";
 import HeaderRightBar from "../components/header/HeaderRightBar";
 
+
 const headerStyles = makeStyles(theme => ({
   topBar: {
     boxShadow: "none"
@@ -50,7 +51,7 @@ function Header(props) {
         </Grid>
 
         {props.location.pathname !== "/register" &&
-          props.location.pathname !== "/login" &&  props.location.pathname === "*" &&(
+          props.location.pathname !== "/login" && (
             <HeaderRightBar changeLocation={changeLocation} />
           )}
       </Toolbar>

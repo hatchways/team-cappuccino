@@ -35,7 +35,9 @@ const FormContainer = theme => ({
     minWidth: "110px",
     maxWidth: "185px",
     backgroundColor: theme.primary,
-    color: "white"
+    color: "white",
+    borderRadius: "25",
+    width: "15vw"
   },
   createAccount: {
     marginTop: "30px"
@@ -112,7 +114,6 @@ class Register extends React.Component {
           <TextField
             id="Name"
             label="Name"
-            autoFocus="true"
             variant="outlined"
             onChange={this.handleChange("name")}
             value={name}
@@ -139,10 +140,6 @@ class Register extends React.Component {
             variant="contained"
             size="large"
             type="submit"
-            buttonStyle={{
-              borderRadius: 25,
-              width: "15vw"
-            }}
             style={{ borderRadius: 25, width: "15vw" }}
             className={classes.formButton}
             onClick={this.handleSubmit}

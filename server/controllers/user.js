@@ -20,7 +20,8 @@ exports.userById = (req, res, next, id) => {
 exports.getUser = (req, res) => {
     req.profile.hashed_password = undefined;
     req.profile.salt = undefined;
-    return res.json(req.profile);
+    console.log(req.profile.avatar);
+    return res.status(200).json(req.profile);
 };
 
 // get all users
@@ -59,14 +60,18 @@ exports.deleteUser = (req, res) => {
 
 // upload user avatar
 exports.uploadAvatar = (req, res) => {
-  singleUpload(req, res, async function(err) {
-    if (err)
-      return res
-        .status(400)
-        .send({
-          errors: [{ title: "Image Upload Error", detail: err.message }]
-        });
-    return res.json({ 'imageUrl': req.file.location });
+  const user = User.findById(req.params.userId).exec((err, user) => {
+    // uploading image
+    singleUpload(req, res, function(err) {
+      if (err) return res.status(400).send({ errors: [{ title: "Image Upload Error", detail: err.message }] });
+
+      if( req.file === undefined ) return res.status(400).json( 'Error: No File Selected' );
+
+
+      user.avatar = req.file.location; // add image for user
+      user.save(); // save user
+      return res.status(200).json(user);
+    });
   });
 };
 
@@ -154,6 +159,6 @@ exports.removeFollower = async (req, res) => {
   }
 };
 
-exports.searchPeople = (req, res) => {
-  
+exports.searchPeople = async (req, res) => {
+  // 
 }

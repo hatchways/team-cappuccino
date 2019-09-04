@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "concurrently": "^4.1.1"
+    "concurrently": "^4.1.1",
+    "fs": "0.0.1-security"
   },
   "devDependencies": {},
   "scripts": {

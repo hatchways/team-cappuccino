@@ -120,7 +120,7 @@ function AddItem(props) {
             disableUnderline: true,
             style: { width: "100%" }
           }}
-          inputProps={{ style: { textAlign: "center" } }}
+          inputCenterProps={{ style: { textAlign: "center" } }}
           placeholder="Paste your link here"
           style={{
             backgroundColor: "white",

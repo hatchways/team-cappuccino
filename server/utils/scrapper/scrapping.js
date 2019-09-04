@@ -95,7 +95,7 @@ const itemScrapping = {
 
 // scrapping only price for cronjob
 const priceScrapping = {
-  initialize: async () => {
+  initialize: async (inputUrl) => {
     console.log("Starting cron-job price scrapping...");
 
     BASE_URL = await getBaseUrl(inputUrl);

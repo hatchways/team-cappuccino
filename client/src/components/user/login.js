@@ -97,7 +97,6 @@ class Login extends React.Component {
           <h1>Sign In</h1>
           <div
             className={classes.formAlert}
-            style={{ display: error ? "" : "none" }}
           >
             {error}
           </div>
@@ -135,6 +134,7 @@ class Login extends React.Component {
             style={{ borderRadius: 25, width: "15vw" }}
             className={classes.formButton}
             onClick={this.handleSubmit}
+            disabled={!email || !password}
           >
             Log In
           </Button>

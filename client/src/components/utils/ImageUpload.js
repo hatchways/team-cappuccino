@@ -25,6 +25,7 @@ function ImageUpload(props) {
   const classes = imageUploadStyles();
   const [image, setImage] = React.useState(null);
 
+
   function fileChangedHandler(event) {
     event.target.files[0] === undefined
       ? setImage(null)

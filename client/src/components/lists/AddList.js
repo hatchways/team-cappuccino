@@ -97,7 +97,7 @@ function AddList(props) {
             disableUnderline: true,
             style: { width: "100%" }
           }}
-          inputProps={{ style: { textAlign: "center" } }}
+          inputCenterProps={{ style: { textAlign: "center" } }}
           placeholder="Enter name"
           onChange={e => {
             setName(e.target.value);

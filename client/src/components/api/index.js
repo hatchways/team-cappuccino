@@ -1,5 +1,6 @@
 // get list
 import makeAuthCall from "./makeAuthCall.js";
+import axios from 'axios';
 import { isAuthenticated } from "../auth/index.js";
 
 export const getUser = () => {
@@ -10,6 +11,31 @@ export const getUser = () => {
 export const getAllUsers = () => {
   return makeAuthCall({}, `/api/users`, "GET", false);
 };
+
+export const uploadAvatar = (body) => {
+  const userId = isAuthenticated().user._id;
+
+  axios.put(`/api/user/${userId}/avatar`, body, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Authorization: `Bearer ${isAuthenticated().token}`
+    },
+  });
+}
+
+export const deleteUser = () => {
+  const userId = isAuthenticated().user._id;
+  localStorage.removeItem("token");
+  return makeAuthCall({}, `/api/user/${userId}`, "DELETE", false)
+};
+
+export const addFollowing = body => {
+  return makeAuthCall(body, `/api/user/follow`, "PUT", false);
+}
+
+export const removeFollowing = body => {
+  return makeAuthCall(body, `/api/user/unfollow`, "PUT", false);
+}
 
 export const addItem = body => {
   return makeAuthCall(body, `api/items/new/${body.list._id}`, "POST", false);
