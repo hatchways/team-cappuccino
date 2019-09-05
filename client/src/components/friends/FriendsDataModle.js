@@ -2,7 +2,9 @@ import {
   getAllUsers,
   getUser,
   addFollowing,
-  removeFollowing
+  removeFollowing,
+  getSuggested,
+  getFollowing
 } from "../api/index.js";
 import { isAuthenticated } from "../auth/index.js";
 
@@ -12,7 +14,7 @@ function FriendsData() {
 }
 
 FriendsData.prototype.fetchSuggestedData = function(completion) {
-  getAllUsers().then(data => {
+  getSuggested().then(data => {
     if (data.error) {
       console.log(data.error);
     } else {
@@ -22,29 +24,13 @@ FriendsData.prototype.fetchSuggestedData = function(completion) {
   });
 };
 
-FriendsData.prototype.followingFromSuggested = function(idList, myId) {
-  let newSuggested = [];
-  this.suggestedData.map((person, index) => {
-    if (idList.find(id => id._id === person._id) !== undefined) {
-      this.followingData.push(person);
-    } else {
-      if (person._id != myId) {
-        newSuggested.push(person);
-      }
-    }
-  });
-  this.suggestedData = newSuggested;
-  console.log(this.followingData);
-  console.log(this.suggestedData);
-};
-
 FriendsData.prototype.fetchFollowingData = function(completion) {
-  getUser().then(data => {
+  getFollowing().then(data => {
     if (data.error) {
       console.log(data.error);
     } else {
-      console.log(data);
-      this.followingFromSuggested(data.following, data._id);
+      console.log("following data", data);
+      this.followingData = data;
       completion();
     }
   });
@@ -68,7 +54,7 @@ FriendsData.prototype.addFollowing = function(id, completion) {
 FriendsData.prototype.removeFollowing = function(id, completion) {
   const person = this.followingData.find(el => el._id === id);
   const index = this.followingData.findIndex(el => el._id === id);
-  const body = { userId: isAuthenticated().user._id, followId: id };
+  const body = { userId: isAuthenticated().user._id, unfollowId: id };
   removeFollowing(body).then(data => {
     if (data.error) {
       console.log(data.error);

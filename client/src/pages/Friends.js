@@ -57,6 +57,19 @@ const friendsPageStyles = makeStyles(theme => ({
     background: "white",
     margin: "0px 0px 1px 0px"
   },
+  suggestedCard: {
+    width: "100%",
+    // height: "40px",
+    padding: "5px 0px 5px 0px",
+    margin: "2px 0px 3px 0px",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    background: "white",
+    color: "silver",
+    fontSize: ".5em"
+  },
   peopleCard: {
     width: "100%",
     height: "90px",
@@ -158,6 +171,18 @@ function FriendsPage() {
       ));
   }
 
+  function makeSuggested() {
+    let peoples = makePeoples(friendsData.suggestedData);
+    peoples.splice(
+      0,
+      0,
+      <div key="suggested header" className={classes.suggestedCard}>
+        suggested
+      </div>
+    );
+    return peoples;
+  }
+
   function SearchArea() {
     return (
       <>
@@ -165,7 +190,7 @@ function FriendsPage() {
           <TextField
             value={currentSearch}
             autoFocus={true}
-            placeholder="search"
+            placeholder={currentTab === 1 ? "search" : "search following"}
             className={classes.searchStyle}
             onChange={handleSearchChange}
             InputProps={{
@@ -196,7 +221,7 @@ function FriendsPage() {
           />
 
           {currentTab === 1
-            ? makePeoples(friendsData.suggestedData)
+            ? makeSuggested()
             : makePeoples(friendsData.followingData)}
         </div>
       </>
