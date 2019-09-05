@@ -45,6 +45,13 @@ router.get(
   UserController.getFollowing
 );
 
+// @route GET api/user/search/:searchTerm
+router.get(
+  "/user/search/:searchTerm",
+  authMiddleware,
+  UserController.searchUsers
+);
+
 // @route GET api/user/:id/suggested
 router.get(
   "/user/:userId/suggested",

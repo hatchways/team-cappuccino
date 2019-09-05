@@ -1,17 +1,43 @@
 import {
-  getAllUsers,
-  getUser,
   addFollowing,
   removeFollowing,
   getSuggested,
-  getFollowing
+  getFollowing,
+  searchUsers
 } from "../api/index.js";
 import { isAuthenticated } from "../auth/index.js";
+import AwesomeDebouncePromise from "awesome-debounce-promise";
 
 function FriendsData() {
   this.followingData = [];
   this.suggestedData = [];
+  this.searchData = [];
+  this.searchState = false;
 }
+
+FriendsData.prototype.fetchSearchUser = function(searchTerm, completion) {
+  searchUsers(searchTerm).then(data => {
+    if (data.error) {
+      console.log(data.error);
+    } else {
+      if (this.searchState) {
+        console.log(data);
+        this.searchData = data;
+        completion();
+      }
+    }
+  });
+};
+
+// FriendsData.prototype.fetchSearchUserDebounced = text =>
+//   AwesomeDebouncePromise(text => {
+//     this.fetchSearchUser(text);
+//   }, 500)(text);
+
+// FriendsData.prototype.handleSuggestedChange = async text => {
+//   const result = await this.friendsData.fetchSearchUserDebounced(text);
+//   this.searchData = result;
+// };
 
 FriendsData.prototype.fetchSuggestedData = function(completion) {
   getSuggested().then(data => {
