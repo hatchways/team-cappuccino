@@ -65,7 +65,7 @@ function Profile(props) {
     <div className={classes.pageContainer}>
       {state.loading && <LoadingSpinner />}
       <h1 className={classes.pageStart}>Profile</h1>
-      <Avatar className={classes.avatarStyle} />
+      <Avatar className={classes.avatarStyle} src={state.user.avatar} />
       <h1 className={classes.userName}>{state.user.name}</h1>
       <Button
         onClick={() => {

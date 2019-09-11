@@ -46,15 +46,17 @@ const addItemBarStyles = makeStyles(theme => ({
 
 export default function AddItemBar(props) {
   const classes = addItemBarStyles();
-  const { lists, reloadData, makeSnackBar } = props;
+  const {
+    makeSnackBar,
+    makeDialogOpen,
+    listDataController,
+    changeDialogState
+  } = props;
   const [state, setState] = useState({
     list: { name: "", _id: "" },
     inputUrl: "",
     inputUrlChanged: false,
-    listSelected: false,
-    scrappingConfirmationOpen: false,
-    uploading: false,
-    body: {}
+    listSelected: false
   });
 
   const itemNameTemp = "Some Name";
@@ -69,20 +71,16 @@ export default function AddItemBar(props) {
 
   function handleClick() {
     if (state.inputUrlChanged && state.listSelected) {
-      setState({
-        ...state,
-        body: { name: itemNameTemp, url: state.inputUrl, list: state.list },
-        uploading: true,
-        inputUrl: "",
-        inputUrlChanged: false
-      });
+      makeDialogOpen("UploadItemDialog");
+      listDataController.uploadItem(
+        { name: itemNameTemp, url: state.inputUrl, list: state.list },
+        () => {
+          changeDialogState("UploadItemDialog", "ScrappingConfirmationDialog");
+        }
+      );
     } else {
       makeSnackBar("Please input a url and select a list");
     }
-  }
-
-  function handleUploadClose() {
-    setState({ ...state, uploading: false });
   }
 
   return (
@@ -92,13 +90,6 @@ export default function AddItemBar(props) {
       alignItems="center"
       className={classes.bodyStart}
     >
-      <UploadItem
-        open={state.uploading}
-        body={state.body}
-        makeSnackBar={makeSnackBar}
-        reloadData={reloadData}
-        onClose={handleUploadClose}
-      />
       <h1 className={classes.addNewItem}>Add new item:</h1>
       <Grid container direction="row" justify="center">
         <Paper className={classes.paperLinkContainer}>
@@ -113,7 +104,7 @@ export default function AddItemBar(props) {
         </Paper>
         <Paper className={classes.paperListContainer}>
           <SelectField
-            listValues={lists}
+            listValues={listDataController.state.lists}
             promptText="Select list"
             onChangeHandler={handleChangeList}
             fillWidthOf="8vw"

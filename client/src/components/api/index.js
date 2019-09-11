@@ -41,6 +41,11 @@ export const getAllListItems = listId => {
   return makeAuthCall({}, `api/list/${listId}/items`, "GET", false);
 };
 
+export const getAllUsersItems = () => {
+  const userId = isAuthenticated().user._id;
+  return makeAuthCall({}, `api/list/${userId}`, "GET", false);
+};
+
 export const getLists = () => {
   const userId = isAuthenticated().user._id;
   return makeAuthCall({}, `api/lists/by/${userId}`, "GET", false);

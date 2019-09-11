@@ -68,6 +68,16 @@ exports.getAllItems = async (req, res) => {
   });
 };
 
+// getAllUsersItems
+exports.getAllUsersItems = async (req, res) => {
+  let userId = req.params.userId;
+  Item.find({ user: userId }).exec((err, items) => {
+    if (err) return res.status(400).json({ error: err });
+
+    return res.status(200).json(items);
+  });
+};
+
 // get single item
 exports.getSingleItem = async (req, res) => {
   return res.json(req.item);
@@ -137,32 +147,32 @@ exports.testingPrice = (req, res) => {
 };
 
 // setting up cron job to schedule scarpping every 23 hours
-cron.schedule("* * 23 * * *", () => {
-  // 1. Find all item to track
-  Item.find({}).exec(async (err, items) => {
-    if (err) console.log(err); // print error
+// cron.schedule("* * 23 * * *", () => {
+//   // 1. Find all item to track
+//   Item.find({}).exec(async (err, items) => {
+//     if (err) console.log(err); // print error
 
-    // loop to find item prices
-    items.forEach(async item => {
-      // 2. Scrap the price with each item's url
-      await scrapper.initialize();
-      let details = await scrapper.getProductDetails(item.url);
-      // convert string to price
-      const newItemPrice = parseFloat(details.price.replace("$", ""));
-      // add new price into our current prices
-      item.prices.push({ price: newItemPrice });
-      // stop scrapper after pushing newItemPrice
-      scrapper.end();
+//     // loop to find item prices
+//     items.forEach(async item => {
+//       // 2. Scrap the price with each item's url
+//       await scrapper.initialize();
+//       let details = await scrapper.getProductDetails(item.url);
+//       // convert string to price
+//       const newItemPrice = parseFloat(details.price.replace("$", ""));
+//       // add new price into our current prices
+//       item.prices.push({ price: newItemPrice });
+//       // stop scrapper after pushing newItemPrice
+//       scrapper.end();
 
-      // compare our new price with our previous price
-      const pricesLength = item.prices.length;
-      const newPrice = item.prices[pricesLength - 1];
-      const oldPrice = item.prices[pricesLength - 2];
+//       // compare our new price with our previous price
+//       const pricesLength = item.prices.length;
+//       const newPrice = item.prices[pricesLength - 1];
+//       const oldPrice = item.prices[pricesLength - 2];
 
-      // see if new price is less than old price
-      if (newPrice < oldPrice) {
-        // send out email to notify user about price change;
-      }
-    });
-  });
-});
+//       // see if new price is less than old price
+//       if (newPrice < oldPrice) {
+//         // send out email to notify user about price change;
+//       }
+//     });
+//   });
+// });

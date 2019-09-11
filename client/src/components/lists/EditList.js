@@ -3,56 +3,13 @@ import React, { useState, useEffect } from "react";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { Button, GridList } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+
 import listImage from "../../assets/shoppingPlaceHolder.png";
 import AddItem from "../items/AddItem.js";
 import ItemCard from "../items/ItemCard.js";
 import { deleteItem, getAllListItems } from "../api/index.js";
 import LoadingSpinner from "../utils/LoadingSpinner.js";
-
-const editListStyles = makeStyles(theme => ({
-  titleFont: {
-    fontSize: "1em",
-    fontWeight: 700,
-    margin: "30px 0px 0px 0px",
-    textAlign: "center",
-    padding: "0px"
-  },
-  itemCountFont: {
-    fontSize: ".8em",
-    color: "grey",
-    fontWeight: 400,
-    textAlign: "center",
-    margin: "0px 0px 20px 0px"
-  },
-  gridListContainer: {
-    overflow: "hidden",
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    marginBottom: "50px"
-  },
-  gridListStyles: {
-    height: "40vh",
-    width: "90%"
-  },
-  tileStyle: {
-    width: "100%",
-    marginTop: "15px",
-    marginBottom: "5px",
-    borderRadius: "10px"
-  },
-  addNewItemButton: {
-    borderRadius: "20px",
-    fontSize: ".8em",
-    fontWeight: 400,
-    color: "white",
-    backgroundColor: theme.primary,
-    marginTop: "40px",
-    height: "38px"
-  }
-}));
+import editListStyles from "./styles/EditListStyles.js";
 
 function EditList(props) {
   const classes = editListStyles();
