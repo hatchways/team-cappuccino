@@ -2,13 +2,13 @@ const User = require("../models/user");
 const updateObj = require("./subs-controller/edit-model");
 const upload = require("../services/image-upload");
 const singleUpload = upload.single("image");
-const FriendsGraph = require("../middleware/friends-graph.js");
-let fg;
-(async () => {
-  let newfg = await FriendsGraph.build();
-  fg = newfg;
-  return;
-})();
+const BFS = require("../middleware/friends-graph.js");
+// let fg;
+// (async () => {
+//   let newfg = await FriendsGraph.build();
+//   fg = newfg;
+//   return;
+// })();
 
 // get user info
 exports.userById = (req, res, next, id) => {
@@ -178,7 +178,7 @@ exports.getSuggested = async (req, res) => {
   const userId = req.params.userId;
 
   try {
-    const suggested = await fg.BFS(userId);
+    const suggested = await BFS(userId);
     const users = await User.find(
       { _id: { $in: suggested } },
       "name _id avatar"

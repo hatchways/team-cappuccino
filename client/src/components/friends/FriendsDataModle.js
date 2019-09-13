@@ -15,6 +15,7 @@ function FriendsData() {
 
 FriendsData.prototype.fetchSuggestedData = function(completion) {
   getSuggested().then(data => {
+    console.log("this is suggested data", data);
     if (data.error) {
       console.log(data.error);
     } else {
