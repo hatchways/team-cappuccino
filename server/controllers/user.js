@@ -165,7 +165,7 @@ exports.searchUsers = async (req, res) => {
 
   try {
     const namesLike = await User.find(
-      { name: { $regex: ".*" + searchTerm + ".*" } },
+      { name: { $regex: ".*" + searchTerm + ".*", $options: "i" } },
       "name _id avatar"
     )
       .limit(20)
@@ -173,6 +173,7 @@ exports.searchUsers = async (req, res) => {
     console.log(searchTerm, namesLike);
     res.status(200).json(namesLike);
   } catch (e) {
+    console.log(e.message);
     res.status(400).json({ error: e.message });
   }
 };
