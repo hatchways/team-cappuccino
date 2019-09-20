@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useState, useEffect, useConstant } from "react";
 import { makeStyles } from "@material-ui/styles";
 import {
   Tabs,
@@ -11,8 +11,8 @@ import {
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import SearchIcon from "@material-ui/icons/Search";
 import CancelIcon from "@material-ui/icons/Cancel";
-import { getAllUsers } from "../components/api/index.js";
 import FriendsData from "../components/friends/FriendsDataModle.js";
+import AwesomeDebouncePromise from "awesome-debounce-promise";
 
 const friendsPageStyles = makeStyles(theme => ({
   pageContainer: {
@@ -78,7 +78,7 @@ const friendsPageStyles = makeStyles(theme => ({
     alignItems: "center",
     justifyContent: "space-between",
     background: "white",
-    marginBottom: "1px"
+    margin: "0px 0px 1px 0px"
   },
   avatarAndName: {
     display: "flex",
@@ -115,6 +115,12 @@ function FriendsPage() {
   });
   let [friendsData, updateFriendsData] = useState(new FriendsData());
 
+  const searchAPI = text =>
+    friendsData.fetchSearchUser(text, () =>
+      setState({ ...state, downloading: false })
+    );
+  const suggestedSearchDebounced = AwesomeDebouncePromise(searchAPI, 500);
+
   useEffect(() => {
     setState({ ...state, downloading: true });
     friendsData.downloadAllData(() => {
@@ -127,7 +133,21 @@ function FriendsPage() {
     setTab(newTab);
   }
 
-  function handleSearchChange(event) {
+  const handleSuggestedSearchChange = async event => {
+    setState({ ...state, downloading: true });
+    const newInput = event.target.value;
+    setSearch(newInput);
+    if (newInput !== "") {
+      friendsData.searchState = true;
+      await suggestedSearchDebounced(event.target.value);
+    } else {
+      setState({ ...state, downloading: false });
+      friendsData.searchData = [];
+      friendsData.searchState = false;
+    }
+  };
+
+  function handleFollowingSearchChange(event) {
     setSearch(event.target.value);
   }
 
@@ -164,14 +184,17 @@ function FriendsPage() {
   }
 
   function makePeoples(list) {
-    return list
-      .filter(person => person.name.includes(currentSearch))
-      .map((person, index) => (
-        <PeopleCard key={index} name={person.name} id={person._id} />
-      ));
+    return (
+      list
+        // .filter(person => person.name.includes(currentSearch))
+        .map((person, index) => (
+          <PeopleCard key={index} name={person.name} id={person._id} />
+        ))
+    );
   }
 
   function makeSuggested() {
+    let searched = makePeoples(friendsData.searchData);
     let peoples = makePeoples(friendsData.suggestedData);
     peoples.splice(
       0,
@@ -180,7 +203,9 @@ function FriendsPage() {
         suggested
       </div>
     );
-    return peoples;
+    let final = searched.concat(peoples);
+    console.log(final);
+    return final;
   }
 
   function SearchArea() {
@@ -192,7 +217,11 @@ function FriendsPage() {
             autoFocus={true}
             placeholder={currentTab === 1 ? "search" : "search following"}
             className={classes.searchStyle}
-            onChange={handleSearchChange}
+            onChange={
+              currentTab === 1
+                ? handleSuggestedSearchChange
+                : handleFollowingSearchChange
+            }
             InputProps={{
               disableUnderline: true,
               startAdornment: (
@@ -211,7 +240,12 @@ function FriendsPage() {
                     margin: "0px 5px 0px 0px",
                     cursor: "pointer"
                   }}
-                  onClick={() => setSearch("")}
+                  onClick={() => {
+                    setSearch("");
+                    setState({ ...state, downloading: false });
+                    friendsData.searchData = [];
+                    friendsData.searchState = false;
+                  }}
                 >
                   <CancelIcon />
                 </InputAdornment>

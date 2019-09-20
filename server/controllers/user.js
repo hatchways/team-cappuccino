@@ -159,6 +159,25 @@ exports.removeFollower = async (req, res) => {
   }
 };
 
+exports.searchUsers = async (req, res) => {
+  const searchTerm = req.params.searchTerm;
+  console.log("searching users");
+
+  try {
+    const namesLike = await User.find(
+      { name: { $regex: ".*" + searchTerm + ".*", $options: "i" } },
+      "name _id avatar"
+    )
+      .limit(20)
+      .exec();
+    console.log(searchTerm, namesLike);
+    res.status(200).json(namesLike);
+  } catch (e) {
+    console.log(e.message);
+    res.status(400).json({ error: e.message });
+  }
+};
+
 exports.getFollowing = async (req, res) => {
   const userId = req.params.userId;
 

@@ -29,6 +29,10 @@ export const getFollowing = () => {
   return makeAuthCall({}, `/api/user/${userId}/following`, "GET", false);
 };
 
+export const searchUsers = searchTerm => {
+  return makeAuthCall({}, `/api/user/search/${searchTerm}`, "GET", false);
+};
+
 export const addItem = body => {
   return makeAuthCall(body, `api/items/new/${body.list._id}`, "POST", false);
 };
