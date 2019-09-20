@@ -54,65 +54,54 @@ const listStyles = makeStyles(theme => ({
 }));
 
 function List(props) {
-  const {
-    modalState,
-    handleModalState,
-    lists,
-    reloadData,
-    makeSnackBar
-  } = props;
+  const { makeDialogOpen, listDataController } = props;
   const classes = listStyles();
   const [selectedList, setSelectedList] = useState({ items: [], _id: "" });
-
-  useEffect(() => {
-    if (lists.find(element => element._id === selectedList._id) != undefined) {
-      setSelectedList(lists.find(element => element._id === selectedList._id));
-    }
-  }, [lists, selectedList._id]);
 
   return (
     <div className={classes.shoppingListsContainer}>
       <h1 className={classes.shoppingListText}>My Shopping Lists:</h1>
       <GridList cellHeight={400}>
-        {lists.map(list => (
-          <GridListTile
-            key={list.title}
-            style={{
-              padding: "0px",
-              width: "288px",
-              height: "400px"
-            }}
-            className={classes.listTile}
-            onClick={e => {
-              setSelectedList(list);
-              handleModalState("editList")();
-            }}
-          >
-            <div className={classes.hoverTransition} />
-            <Grid container direction="column" alignItems="center">
-              <div
-                style={{
-                  height: "300px",
-                  overflow: "hidden",
-                  borderRadius: "15px 15px 0px 0px"
-                }}
-              >
-                <img src={listImage} alt="list" width="100%" />
-              </div>
-              <h2
-                style={{
-                  width: "100%",
-                  marginBottom: "0px",
-                  alignSelf: "center",
-                  textAlign: "center"
-                }}
-              >
-                {list.title}
-              </h2>
-              <h3 style={{ marginTop: "10px" }}>{list.__v} items</h3>
-            </Grid>
-          </GridListTile>
-        ))}
+        {listDataController.state.lists !== undefined &&
+          listDataController.state.lists.map(list => (
+            <GridListTile
+              key={list.title}
+              style={{
+                padding: "0px",
+                width: "288px",
+                height: "400px"
+              }}
+              className={classes.listTile}
+              onClick={e => {
+                listDataController.setSelectedList(list);
+                makeDialogOpen("EditListDialog");
+              }}
+            >
+              <div className={classes.hoverTransition} />
+              <Grid container direction="column" alignItems="center">
+                <div
+                  style={{
+                    height: "300px",
+                    overflow: "hidden",
+                    borderRadius: "15px 15px 0px 0px"
+                  }}
+                >
+                  <img src={listImage} alt="list" width="100%" />
+                </div>
+                <h2
+                  style={{
+                    width: "100%",
+                    marginBottom: "0px",
+                    alignSelf: "center",
+                    textAlign: "center"
+                  }}
+                >
+                  {list.title}
+                </h2>
+                <h3 style={{ marginTop: "10px" }}>{list.__v} items</h3>
+              </Grid>
+            </GridListTile>
+          ))}
         <GridListTile
           style={{
             padding: "0px",
@@ -123,7 +112,9 @@ function List(props) {
         >
           <div
             className={classes.hoverTransition}
-            onClick={handleModalState("addList")}
+            onClick={() => {
+              makeDialogOpen("AddListDialog");
+            }}
           />
           <Grid
             container
@@ -138,24 +129,10 @@ function List(props) {
             }}
           >
             <Add style={{ width: "2em", height: "2em" }} />
-            <AddList
-              open={modalState.addList}
-              onClose={handleModalState("addList")}
-              reloadData={reloadData}
-              makeSnackBar={makeSnackBar}
-            />
             <h1 style={{ textAlign: "center" }}>Add New List</h1>
           </Grid>
         </GridListTile>
       </GridList>
-      <EditList
-        open={modalState.editList}
-        handleModalState={handleModalState}
-        list={selectedList}
-        lists={lists}
-        reloadData={reloadData}
-        makeSnackBar={makeSnackBar}
-      />
     </div>
   );
 }

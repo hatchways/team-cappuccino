@@ -26,6 +26,7 @@ function SelectListField(props) {
   useEffect(() => {
     if (
       list === "" &&
+      listValues !== undefined &&
       listValues.find(element => element._id === startingValue._id) != undefined
     ) {
       setList(
@@ -95,11 +96,12 @@ function SelectListField(props) {
       <option value="" disabled>
         {promptText}
       </option>
-      {listValues.map(element => (
-        <option key={element._id} value={element._id}>
-          {element.title}
-        </option>
-      ))}
+      {listValues !== undefined &&
+        listValues.map(element => (
+          <option key={element._id} value={element._id}>
+            {element.title}
+          </option>
+        ))}
     </TextField>
   );
 }

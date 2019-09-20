@@ -2,7 +2,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const scrappingConfirmationStyles = makeStyles(theme => ({
   containerStyle: {
-    width: "30vw",
+    width: "100%",
     display: "flex",
     flexDirection: "column",
     alignItems: "center"

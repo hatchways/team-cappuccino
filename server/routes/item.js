@@ -1,27 +1,29 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const authMiddleware = require('../middleware/auth-middleware');
-const ItemControllers = require('../controllers/item');
-const ListControllers = require('../controllers/list');
-
+const authMiddleware = require("../middleware/auth-middleware");
+const ItemControllers = require("../controllers/item");
+const ListControllers = require("../controllers/list");
 
 // @route POST /items/:listId
-router.post('/items/new/:listId', authMiddleware, ItemControllers.addItem);
+router.post("/items/new/:listId", authMiddleware, ItemControllers.addItem);
 
 // @route GET /items/:itemId
-router.get('/items/:itemId', authMiddleware, ItemControllers.getSingleItem);
+router.get("/items/:itemId", authMiddleware, ItemControllers.getSingleItem);
 
 // @route GET /items/:listId
-router.get('/list/:listId/items', authMiddleware, ItemControllers.getAllItems);
+router.get("/list/:listId/items", authMiddleware, ItemControllers.getAllItems);
+
+// @route Get /items/:userId
+router.get("/list/:userId", authMiddleware, ItemControllers.getAllUsersItems);
 
 // @route DELETE /items/:itemId
-router.delete('/items/:itemId', authMiddleware, ItemControllers.deleteItem);
+router.delete("/items/:itemId", authMiddleware, ItemControllers.deleteItem);
 
-// @route DELETE all items 
-router.delete('/:listId/items', authMiddleware, ItemControllers.deleteAllItems);
+// @route DELETE all items
+router.delete("/:listId/items", authMiddleware, ItemControllers.deleteAllItems);
 
 // @route GET /items/test
-router.get('/items', ItemControllers.testingPrice);
+router.get("/items", ItemControllers.testingPrice);
 
 // @route params listId
 router.param("listId", ListControllers.listById);
