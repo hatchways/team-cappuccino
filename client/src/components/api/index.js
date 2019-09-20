@@ -13,11 +13,21 @@ export const getAllUsers = () => {
 
 export const addFollowing = body => {
   return makeAuthCall(body, `/api/user/follow`, "PUT", false);
-}
+};
 
 export const removeFollowing = body => {
   return makeAuthCall(body, `/api/user/unfollow`, "PUT", false);
-}
+};
+
+export const getSuggested = () => {
+  const userId = isAuthenticated().user._id;
+  return makeAuthCall({}, `/api/user/${userId}/suggested`, "GET", false);
+};
+
+export const getFollowing = () => {
+  const userId = isAuthenticated().user._id;
+  return makeAuthCall({}, `/api/user/${userId}/following`, "GET", false);
+};
 
 export const addItem = body => {
   return makeAuthCall(body, `api/items/new/${body.list._id}`, "POST", false);

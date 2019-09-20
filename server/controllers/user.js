@@ -2,6 +2,13 @@ const User = require("../models/user");
 const updateObj = require("./subs-controller/edit-model");
 const upload = require("../services/image-upload");
 const singleUpload = upload.single("image");
+const BFS = require("../middleware/friends-graph.js");
+// let fg;
+// (async () => {
+//   let newfg = await FriendsGraph.build();
+//   fg = newfg;
+//   return;
+// })();
 
 // get user info
 exports.userById = (req, res, next, id) => {
@@ -12,15 +19,15 @@ exports.userById = (req, res, next, id) => {
       if (err || !user)
         return res.status(400).json({ error: "User is not found!" });
       // return user
-      req.profile = user; 
+      req.profile = user;
       next();
     });
 };
 
 exports.getUser = (req, res) => {
-    req.profile.hashed_password = undefined;
-    req.profile.salt = undefined;
-    return res.json(req.profile);
+  req.profile.hashed_password = undefined;
+  req.profile.salt = undefined;
+  return res.json(req.profile);
 };
 
 // get all users
@@ -33,36 +40,36 @@ exports.getAllUsers = async (req, res) => {
 
 // updating usera
 exports.updateUser = (req, res) => {
-  User.findById(req.profile._id).select("-hashed_password -salt").exec(async (err, user) => {
-    if(err) return res.status(400).json({ error: err });
+  User.findById(req.profile._id)
+    .select("-hashed_password -salt")
+    .exec(async (err, user) => {
+      if (err) return res.status(400).json({ error: err });
 
-    // update user and save 
-    updateObj(user, req.body, ["name", "email"]);
-    await user.save();
-    return res.status(200).json(user); // return user
-  });
+      // update user and save
+      updateObj(user, req.body, ["name", "email"]);
+      await user.save();
+      return res.status(200).json(user); // return user
+    });
 };
 
 // delete user
 exports.deleteUser = (req, res) => {
   User.findById(req.profile._id).exec((err, user) => {
     if (err) return res.status(400).json({ error: err });
-    // remove user 
+    // remove user
     user.remove();
-    res.status(200).json({ message: 'Your account has been deleted!' });
-  })
+    res.status(200).json({ message: "Your account has been deleted!" });
+  });
 };
 
 // upload user avatar
 exports.uploadAvatar = (req, res) => {
   singleUpload(req, res, async function(err) {
     if (err)
-      return res
-        .status(400)
-        .send({
-          errors: [{ title: "Image Upload Error", detail: err.message }]
-        });
-    return res.json({ 'imageUrl': req.file.location });
+      return res.status(400).send({
+        errors: [{ title: "Image Upload Error", detail: err.message }]
+      });
+    return res.json({ imageUrl: req.file.location });
   });
 };
 
@@ -77,6 +84,7 @@ exports.addFollowing = async (req, res, next) => {
       (err, result) => {
         if (err) return res.status(400).json({ error: err });
 
+        fg.setFollowing(userId, followId);
         next(); // move to next actions
       }
     );
@@ -91,10 +99,11 @@ exports.removeFollowing = async (req, res, next) => {
   try {
     await User.findByIdAndUpdate(
       userId,
-      { $unset: { following: unfollowId } },
+      { $pull: { following: unfollowId } },
       (err, result) => {
         if (err) return res.status(400).json({ error: err });
 
+        fg.removeFollowing(userId, unfollowId);
         next(); // move to next actions
       }
     );
@@ -133,7 +142,7 @@ exports.removeFollower = async (req, res) => {
   try {
     await User.findByIdAndUpdate(
       unfollowId,
-      { $unset: { followers: userId } },
+      { $pull: { followers: userId } },
       { new: true }
     )
       .populate("following", "_id name email")
@@ -146,6 +155,37 @@ exports.removeFollower = async (req, res) => {
         });
       });
   } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
+};
+
+exports.getFollowing = async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    await User.findById(userId)
+      .populate("following")
+      .exec((err, result) => {
+        // console.log(result);
+        res.status(200).json(result.following);
+      });
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
+};
+
+exports.getSuggested = async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    const suggested = await BFS(userId);
+    const users = await User.find(
+      { _id: { $in: suggested } },
+      "name _id avatar"
+    ).exec();
+    res.status(200).json(users);
+  } catch (e) {
+    console.log(e.message);
     res.status(400).json({ error: e.message });
   }
 };
