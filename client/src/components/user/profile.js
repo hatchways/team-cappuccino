@@ -1,8 +1,8 @@
 import React from "react";
+import { withRouter } from "react-router-dom";
+
 import { getUser } from "../api";
 import { isAuthenticated, logout } from "../auth";
-
-const ProfileContainer = theme => ({});
 
 class Profile extends React.Component {
   state = {
@@ -14,7 +14,8 @@ class Profile extends React.Component {
     const token = isAuthenticated().token;
     const userId = isAuthenticated().user._id;
 
-    getUser(userId, token).then(data => {
+    console.log("profile did mount");
+    getUser(userId, token, this.props.history).then(data => {
       if (data.error) {
         this.setState({ error: data.error });
       } else {
@@ -32,8 +33,7 @@ class Profile extends React.Component {
         <h1>Name: {user.name}</h1>
         <button
           onClick={() => {
-            logout();
-            this.props.history.push("/");
+            logout(this.props.history);
           }}
         >
           Logout
@@ -43,4 +43,4 @@ class Profile extends React.Component {
   }
 }
 
-export default Profile;
+export default withRouter(Profile);

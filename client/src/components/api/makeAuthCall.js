@@ -1,6 +1,8 @@
-import { isAuthenticated } from "../auth";
+import { withRouter } from "react-router-dom";
 
-const makeAuthCall = (body, url, method, isForm) => {
+import { isAuthenticated, logout } from "../auth";
+
+const makeAuthCall = (body, url, method, isForm, history) => {
   const makeFormData = () => {
     let formData = new FormData();
     for (let key in body) {
@@ -24,9 +26,14 @@ const makeAuthCall = (body, url, method, isForm) => {
     ...exportBody
   })
     .then(response => {
+      if (response.status === 401) {
+        logout(history);
+      }
       return response.json();
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      console.log(err);
+    });
 };
 
 export default makeAuthCall;

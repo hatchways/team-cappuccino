@@ -15,7 +15,7 @@ import AddListDialog from "../components/lists/AddListDialog.js";
 import EditListDialog from "../components/lists/EditListDialog.js";
 import AddItemDialog from "../components/items/AddItemDialog.js";
 
-function Lists() {
+function Lists(props) {
   const [snackBarState, setSnackBarState] = useState({
     message: "",
     open: false,
@@ -35,7 +35,11 @@ function Lists() {
     });
   }
   // let [listDataController, setDataController] = useState(
-  let listDataController = new ListsDataController(makeSnackBar, setTestState);
+  let listDataController = new ListsDataController(
+    makeSnackBar,
+    setTestState,
+    props.history
+  );
   // );
   console.log(listDataController.state);
 

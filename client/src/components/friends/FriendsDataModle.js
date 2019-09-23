@@ -6,17 +6,17 @@ import {
   searchUsers
 } from "../api/index.js";
 import { isAuthenticated } from "../auth/index.js";
-import AwesomeDebouncePromise from "awesome-debounce-promise";
 
-function FriendsData() {
+function FriendsData(history) {
   this.followingData = [];
   this.suggestedData = [];
   this.searchData = [];
   this.searchState = false;
+  this.history = history;
 }
 
 FriendsData.prototype.fetchSearchUser = function(searchTerm, completion) {
-  searchUsers(searchTerm).then(data => {
+  searchUsers(searchTerm, this.history).then(data => {
     if (data.error) {
       console.log(data.error);
     } else {
@@ -29,18 +29,8 @@ FriendsData.prototype.fetchSearchUser = function(searchTerm, completion) {
   });
 };
 
-// FriendsData.prototype.fetchSearchUserDebounced = text =>
-//   AwesomeDebouncePromise(text => {
-//     this.fetchSearchUser(text);
-//   }, 500)(text);
-
-// FriendsData.prototype.handleSuggestedChange = async text => {
-//   const result = await this.friendsData.fetchSearchUserDebounced(text);
-//   this.searchData = result;
-// };
-
 FriendsData.prototype.fetchSuggestedData = function(completion) {
-  getSuggested().then(data => {
+  getSuggested(this.history).then(data => {
     console.log("this is suggested data", data);
     if (data.error) {
       console.log(data.error);
@@ -52,7 +42,7 @@ FriendsData.prototype.fetchSuggestedData = function(completion) {
 };
 
 FriendsData.prototype.fetchFollowingData = function(completion) {
-  getFollowing().then(data => {
+  getFollowing(this.history).then(data => {
     if (data.error) {
       console.log(data.error);
     } else {
@@ -67,7 +57,7 @@ FriendsData.prototype.addFollowing = function(id, completion) {
   const person = this.suggestedData.find(el => el._id === id);
   const index = this.suggestedData.findIndex(el => el._id === id);
   const body = { userId: isAuthenticated().user._id, followId: id };
-  addFollowing(body).then(data => {
+  addFollowing(body, this.history).then(data => {
     if (data.error) {
       console.log(data.error);
     } else {
@@ -82,7 +72,7 @@ FriendsData.prototype.removeFollowing = function(id, completion) {
   const person = this.followingData.find(el => el._id === id);
   const index = this.followingData.findIndex(el => el._id === id);
   const body = { userId: isAuthenticated().user._id, unfollowId: id };
-  removeFollowing(body).then(data => {
+  removeFollowing(body, this.history).then(data => {
     if (data.error) {
       console.log(data.error);
     } else {

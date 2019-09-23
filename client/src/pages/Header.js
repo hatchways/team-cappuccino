@@ -25,10 +25,11 @@ const headerStyles = makeStyles(theme => ({
 }));
 
 function Header(props) {
+  const history = props.history;
   const classes = headerStyles();
 
   function changeLocation(loc) {
-    props.history.push(loc);
+    history.push(loc);
   }
 
   return (

@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useConstant } from "react";
+import React, { useState, useEffect } from "react";
+import { withRouter } from "react-router-dom";
+
 import { makeStyles } from "@material-ui/styles";
 import {
   Tabs,
@@ -104,7 +106,8 @@ const friendsPageStyles = makeStyles(theme => ({
   }
 }));
 
-function FriendsPage() {
+function FriendsPage(props) {
+  const history = props.history;
   const classes = friendsPageStyles();
   const [currentTab, setTab] = useState(0);
   const [currentSearch, setSearch] = useState("");
@@ -113,7 +116,7 @@ function FriendsPage() {
     downloaded: false,
     changedLists: false
   });
-  let [friendsData, updateFriendsData] = useState(new FriendsData());
+  let [friendsData, updateFriendsData] = useState(new FriendsData(history));
 
   const searchAPI = text =>
     friendsData.fetchSearchUser(text, () =>
