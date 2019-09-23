@@ -9,7 +9,7 @@ import {
 } from "../api/index.js";
 import Lists from "../../pages/Lists.js";
 
-function ListsDataController(makeSnackBar, changeParentState) {
+function ListsDataController(makeSnackBar, changeParentState, history) {
   this.reactState = useState({
     downloaded: false,
     downloading: false,
@@ -23,6 +23,7 @@ function ListsDataController(makeSnackBar, changeParentState) {
   this.setState = this.reactState[1];
   this.makeSnackBar = makeSnackBar;
   this.changeParentState = changeParentState;
+  this.history = history;
 }
 
 ListsDataController.prototype.setTempInformation = function(data) {
@@ -38,7 +39,7 @@ ListsDataController.prototype.getListItems = function(list) {
 };
 
 ListsDataController.prototype.loadListData = function(completion) {
-  getLists().then(data => {
+  getLists(this.history).then(data => {
     if (data.error) {
       console.log(data.error, "there was an error");
     } else {
@@ -48,7 +49,7 @@ ListsDataController.prototype.loadListData = function(completion) {
 };
 
 ListsDataController.prototype.loadAllListItems = function(completion) {
-  getAllUsersItems().then(data => {
+  getAllUsersItems(this.history).then(data => {
     if (data.error) {
       console.log(data.error, "there was an error");
     } else {
@@ -73,7 +74,7 @@ ListsDataController.prototype.loadListDataWithLoading = function() {
 };
 
 ListsDataController.prototype.uploadItem = function(body, completion) {
-  addItem(body).then(data => {
+  addItem(body, this.history).then(data => {
     if (data.error) {
       this.makeSnackBar("Item upload failed");
       console.log(data.error);
@@ -97,7 +98,7 @@ ListsDataController.prototype.updateListAndDataItemRemoval = function(itemId) {
 };
 
 ListsDataController.prototype.deleteAItem = function(id, completion) {
-  deleteItem(id).then(data => {
+  deleteItem(id, this.history).then(data => {
     if (data.error) {
       this.makeSnackBar("error deleting item");
     } else {

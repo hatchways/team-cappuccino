@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { withRouter } from "react-router-dom";
+
 import { getUser } from "../components/api";
 import { isAuthenticated, logout } from "../components/auth";
 import { Avatar, Button } from "@material-ui/core";
@@ -38,6 +40,7 @@ const profileStyles = makeStyles(theme => ({
 }));
 
 function Profile(props) {
+  const history = props.history;
   const classes = profileStyles();
   const [state, setState] = useState({
     user: "",
@@ -47,11 +50,12 @@ function Profile(props) {
 
   useEffect(() => {
     onMount();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function onMount() {
     const token = isAuthenticated().token;
-    getUser(token).then(data => {
+    getUser(token, history).then(data => {
       if (data.error) {
         setState({ user: { name: "" }, error: data.error, loading: false });
       } else {
@@ -69,8 +73,7 @@ function Profile(props) {
       <h1 className={classes.userName}>{state.user.name}</h1>
       <Button
         onClick={() => {
-          logout();
-          props.history.push("/");
+          logout(history);
         }}
         className={classes.signOutButton}
         size="large"
@@ -81,4 +84,4 @@ function Profile(props) {
   );
 }
 
-export default Profile;
+export default withRouter(Profile);

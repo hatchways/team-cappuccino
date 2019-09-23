@@ -1,6 +1,9 @@
-import React from "react";
-import { Button, Badge } from "@material-ui/core";
-import AccountCircle from "@material-ui/icons/AccountCircle";
+import React, { useState, useEffect } from "react";
+import { withRouter } from "react-router-dom";
+
+import { isAuthenticated } from "../auth";
+import { getUser } from "../api";
+import { Button, Badge, Avatar } from "@material-ui/core";
 import { makeStyles, withStyles } from "@material-ui/styles";
 import HeaderNotification from "./HeaderNotification.js";
 import { logout } from "../../components/auth";
@@ -27,9 +30,9 @@ const headerRightBarStyles = makeStyles(theme => ({
   },
   accountCircle: {
     color: theme.primary,
-    width: "1.5em",
-    height: "1.5em",
-    marginLeft: "40px"
+    width: "1.7em",
+    height: "1.7em",
+    marginLeft: "20px"
   },
   profile: {
     marginLeft: "5px",
@@ -51,10 +54,33 @@ const StyledBadge = withStyles(theme => ({
 }))(Badge);
 
 function HeaderRightBar(props) {
+  const history = props.history;
   const classes = headerRightBarStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const notificationElements = ["a", "b", "c", "d", "e"];
   const { changeLocation } = props;
+  const [state, setState] = useState({
+    user: "",
+    error: "",
+    loading: true
+  });
+
+  useEffect(() => {
+    onMount();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  function onMount() {
+    const token = isAuthenticated().token;
+    getUser(token, history).then(data => {
+      if (data.error) {
+        setState({ user: { name: "" }, error: data.error, loading: false });
+      } else {
+        console.log(data);
+        setState({ error: "", user: data, loading: false });
+      }
+    });
+  }
 
   function handleClick(event) {
     setAnchorEl(event.currentTarget);
@@ -98,7 +124,7 @@ function HeaderRightBar(props) {
         handleClose={handleClose}
         elements={notificationElements}
       />
-      <AccountCircle className={classes.accountCircle} />
+      <Avatar className={classes.accountCircle} src={state.user.avatar} />
       <Button
         className={classes.profile}
         onClick={() => {
@@ -110,8 +136,7 @@ function HeaderRightBar(props) {
       <Button
         className={classes.profile}
         onClick={() => {
-          logout();
-          changeLocation("/");
+          logout(props.history);
         }}
       >
         Sign Out
@@ -120,4 +145,4 @@ function HeaderRightBar(props) {
   );
 }
 
-export default HeaderRightBar;
+export default withRouter(HeaderRightBar);

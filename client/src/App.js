@@ -35,6 +35,7 @@ class App extends React.Component {
               <Route path="/friends" component={FriendsPage} />
               <PrivateRoute exact path="/profile" component={ProfilePage} />
               <PrivateRoute exact path="/lists" component={ListPage} />
+              <Redirect from="*" to="/" />
             </Switch>
           </Fragment>
         </BrowserRouter>
