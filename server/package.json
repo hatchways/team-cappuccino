@@ -36,7 +36,7 @@
     "request-promise": "^4.2.4",
     "scrape-it": "^5.1.4",
     "uuid": "^3.3.3",
-    "validator": "^11.1.0"
+    "validator": "^13.7.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",
